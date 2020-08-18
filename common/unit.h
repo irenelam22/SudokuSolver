@@ -25,6 +25,7 @@ void print_unit(unit_t* unit);
 bool possibles_add(unit_t* unit, int val);
 bool possibles_remove(unit_t* unit, int val);
 bool possibles_contain(unit_t* unit, int val);
+int get_unit_val(unit_t *unit); 
 
 #endif // __UNIT_H
 

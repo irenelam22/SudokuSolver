@@ -1,4 +1,4 @@
-OBJS = common.o unit.o
+OBJS = common.o puzzle.o unit.o
 LIB = common.a
 
 CFLAGS = -Wall -pedantic -std=c11 -ggdb $(FLAGS)
@@ -9,6 +9,7 @@ $(LIB): $(OBJS)
 
 common.o: common.h
 unit.o: unit.h ../libcs50/counters.h
+puzzle.o: puzzle.h unit.h
 
 .PHONY: clean
 
