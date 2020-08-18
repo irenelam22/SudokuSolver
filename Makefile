@@ -10,6 +10,11 @@ MAKE = make
 $(PROG): $(OBJS)
 	$(CC) $(CFLAGS) $^ $(LIBS) -o $@ 
 
+puzzletest: puzzletest.o common/puzzle.o common/unit.o libcs50/libcs50.a
+	$(CC) $(CFLAGS) $^ -o $@
+
+puzzletest.o: $(C)/puzzle.h
+
 .PHONY: clean valgrind
 
 libcs50/counters.o: libcs50/counters.h

@@ -233,3 +233,9 @@ bool possibles_contain(unit_t* unit, int val){
         return false;
     }
 }
+
+/*******get_unit_val********/
+int get_unit_val(unit_t *unit)
+{
+    return unit->val; 
+}
