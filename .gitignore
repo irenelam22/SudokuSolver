@@ -1,0 +1,5 @@
+test
+*.o
+*.a
+.DS_Store
+*.dSYM
