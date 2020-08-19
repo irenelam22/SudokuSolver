@@ -9,13 +9,17 @@ Dartmouth CS50, Summer 2020
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "../common/puzzle.h"
 #include "../common/unit.h"
+#include "../libcs50/file.h"
+#include "../libcs50/memory.h"
+#include "../libcs50/counters.h"
 
-const int EMPTY_CELL = 0;
-const int MAX_ROW = 9; 
-const int MAX_COL = 9; 
-
+// const int EMPTY_CELL = 0;
+// const int MAX_ROW = 9; 
+// const int MAX_COL = 9; 
+bool solve_puzzle(puzzle_t* puzzle);
 unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
 counters_t* possibles_create(puzzle_t* puzzle, unit_t* unit);
 void updating_possibles(puzzle_t* puzzle, unit_t* unit);
@@ -24,6 +28,15 @@ void solveable_helper(void* ptr, unit_t* current_cell);
 bool is_puzzle_solveable(puzzle_t* puzzle);
 void first_valid_unit(void* ptr, unit_t* current_cell);
 unit_t* next_unit(puzzle_t* puzzle);
+
+int main(const int argc, const char *argv[])
+{
+    puzzle_t* puzzle = puzzle_new(); 
+    solve_puzzle(puzzle);
+    puzzle_print(puzzle);
+    // unit_t* cell = choose_unit(puzzle);
+    return 0;
+}
 
 /*******solve_puzzle********/
 /* Fills in the entire puzzle (main solving method)
@@ -177,8 +190,15 @@ bool is_puzzle_solveable(puzzle_t* puzzle)
 */
 void first_valid_unit(void* ptr, unit_t* current_cell) 
 {
-    if (ptr != NULL && (current_cell -> val == EMPTY_CELL)) {
-        ptr = current_cell;
+    // EMPTY_CELL = 0;
+    unit_t* unit = ptr;
+    if ((unit->val) != NULL) {
+        return;
+    }
+    if ( current_cell -> val == 0) {
+        unit = current_cell;
+        
+        printf("%d", unit -> val);
     }
 }
 
@@ -195,6 +215,7 @@ unit_t* next_unit(puzzle_t* puzzle)
     unit_t* cell = NULL;
     puzzle_iterate(puzzle, &cell, first_valid_unit);
     if (cell == NULL) {
+        printf("cell is empty");
         return NULL;
     }
     else {
