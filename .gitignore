@@ -3,3 +3,4 @@ test
 *.a
 .DS_Store
 *.dSYM
+.vscode

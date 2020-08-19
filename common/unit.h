@@ -16,7 +16,14 @@
 #ifndef __UNIT_H
 #define __UNIT_H
 
-typedef struct unit unit_t;
+typedef struct unit{
+    int val;
+    int unit_num;
+    int row_num;
+    int col_num;
+    int box_num;
+    counters_t* possibles;
+} unit_t;
 
 unit_t* unit_new(int unit_num, int val);
 

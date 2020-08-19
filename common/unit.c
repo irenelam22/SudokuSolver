@@ -19,16 +19,6 @@ static int generate_row_num(int unit_num);
 static int generate_column_num(int unit_num);
 static int generate_box_num(int row_num, int col_num);
 
-typedef struct unit{
-    int val;
-    int unit_num;
-    int row_num;
-    int col_num;
-    int box_num;
-    counters_t* possibles;
-
-} unit_t;
-
 unit_t* unit_new(int unit_num, int val){
     if ( unit_num < 1 || unit_num > 81){
         fprintf(stderr, "Invalid unit_num\n");
