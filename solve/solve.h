@@ -7,6 +7,6 @@
 #define SOLVE_H
 
 void solve_puzzle(puzzle_t* puzzle);
-unit_t* choose_unit(puzzle_t* puzzle);
+unit_t* next_unit(puzzle_t* puzzle);
 
 #endif	# SOLVE_H
