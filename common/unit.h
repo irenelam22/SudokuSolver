@@ -34,6 +34,7 @@ bool possibles_remove(unit_t* unit, int val);
 bool possibles_contain(unit_t* unit, int val);
 bool possibles_isEmpty(unit_t* unit);
 int get_unit_val(unit_t *unit); 
+int possibles_get_one(unit_t* unit);
 
 #endif // __UNIT_H
 

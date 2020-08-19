@@ -85,7 +85,8 @@ unit_t* backtrace(puzzle_t* puzzle, unit_t* unit)
  * Inputs: puzzle, unit
  * Output: newly created set
 */
-counters_t* possibles_create(puzzle_t* puzzle, unit_t* unit) {
+counters_t* possibles_create(puzzle_t* puzzle, unit_t* unit) 
+{
     counters_t* set = counters_new();
     for (int i = 1; i < 10; i++) {
         counters_add(set, i);
