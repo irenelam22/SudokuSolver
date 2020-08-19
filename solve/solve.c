@@ -16,6 +16,15 @@ const int EMPTY_CELL = 0;
 const int MAX_ROW = 9; 
 const int MAX_COL = 9; 
 
+unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
+counters_t* possibles_create(puzzle_t* puzzle, unit_t* unit);
+void updating_possibles(puzzle_t* puzzle, unit_t* unit);
+void updating_possibles_helper(void *arg, unit_t* unit);
+void solveable_helper(void* ptr, unit_t* current_cell);
+bool is_puzzle_solveable(puzzle_t* puzzle);
+void first_valid_unit(void* ptr, unit_t* current_cell);
+unit_t* next_unit(puzzle_t* puzzle);
+
 /*******solve_puzzle********/
 /* Fills in the entire puzzle (main solving method)
  * Inputs: puzzle
@@ -24,7 +33,7 @@ const int MAX_COL = 9;
 bool solve_puzzle(puzzle_t* puzzle)
 {
     unit_t* unit = NULL;
-    while ((unit == next_unit(puzzle)) != NULL) {
+    while ((unit = next_unit(puzzle)) != NULL) {
         counters_t* set = unit -> possibles;
         if (set == NULL) {
             set = possibles_create(puzzle, unit);
@@ -73,7 +82,6 @@ unit_t* backtrace(puzzle_t* puzzle, unit_t* unit)
     }
     if (row >= 0 && col >= 0) {
         new_unit = puzzle_get_unit(puzzle, row, col);
-        counters_t* new_possibles = new_unit -> possibles;
         possibles_remove(new_unit, val);
         return new_unit;
     }

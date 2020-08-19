@@ -5,7 +5,7 @@
 
 PROG = solve
 OBJS = solve.o
-LIBS = ../common/common.a ../libcs50/libcs50.a ../common/puzzle.o
+LIBS = ../common/common.a ../libcs50/libcs50.a 
 
 # uncomment the following to turn on verbose memory logging
 #TESTING=-DMEMTEST

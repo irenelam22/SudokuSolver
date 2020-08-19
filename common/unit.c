@@ -219,6 +219,14 @@ bool possibles_remove(unit_t* unit, int val)
     return true;
 }
 
+void possibles_get_one_helper(void *arg, const int key, const int count)
+{
+    int* ptr = arg;
+    if (ptr != NULL && count == 1) {
+        *ptr = key;
+    }
+}
+
 int possibles_get_one(unit_t* unit) 
 {
     int* ptr = NULL;
@@ -229,13 +237,6 @@ int possibles_get_one(unit_t* unit)
     }
     else {
         return *ptr;
-    }
-}
-
-void possibles_get_one_helper(void *arg, const int key, const int count)
-{
-    if (arg != NULL && count == 1) {
-        arg = key;
     }
 }
 
@@ -255,8 +256,9 @@ bool possibles_contain(unit_t* unit, int val)
 
 void possibles_isEmpty_helper(void *arg, const int key, const int count)
 {
-    if (arg != NULL && count != 0) {
-        arg = key;
+    int* ptr = arg;
+    if (ptr != NULL && count != 0) {
+       *ptr = key;
     }
 }
 
