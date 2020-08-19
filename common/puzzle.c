@@ -14,6 +14,9 @@ group: project-kidd
 #include "../libcs50/file.h"
 #include "../libcs50/memory.h"
 
+// TODO: Should have some way for puzzle to designate non-changeable units (Irene)
+
+
 const int MAX_ROW = 9; 
 const int MAX_COL = 9; 
 // sizeof(unit_t) wasn't working, so I hard-coded it as a global variable
@@ -109,6 +112,28 @@ puzzle_t *puzzle_load(FILE *fp)
         fscanf(fp, "|"); 
     }
     return puzzle; 
+}
+
+/**********puzzle_get_unit*************/
+/* Returns the unit of a puzzle given its row and col number
+ * Inputs: puzzle, row number, col number of desired unit
+ * Output: unit
+*/
+unit_t* puzzle_get_unit(puzzle_t* puzzle, int row, int col)
+{
+    if (puzzle == NULL) {
+        fprintf(stderr, "puzzle_get_unit received a NULL puzzle");
+        return NULL;
+    }
+    if (row < 0 || row > 8) {
+        fprintf(stderr, "puzzle_get_unit received an out of bounds row");
+        return NULL;
+    }
+    if (col < 0 || col > 8 ) {
+        fprintf(stderr, "puzzle_get_unit received an out of bounds col");
+        return NULL;
+    }
+    return puzzle[row][col];
 }
 
 void puzzle_iterate(puzzle_t* puzzle, void *arg, void (*itemfunc)(void *arg, unit_t* cell))

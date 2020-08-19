@@ -10,8 +10,9 @@ LIBS = ../common/common.a ../libcs50/libcs50.a ../common/puzzle.o
 # uncomment the following to turn on verbose memory logging
 #TESTING=-DMEMTEST
 
-# CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I../common -I../libcs50  
+CFLAGS = -Wall -pedantic -std=c11 -ggdb $(TESTING) -I../common -I../libcs50  
 MAKE = make
+CC = gcc
 
 .PHONY: test clean all
 
@@ -22,8 +23,8 @@ $(LIB): $(OBJS)
 
 solve: solve.o
 
-# test:
-# 	bash testing.sh &> testing.out
+test:
+	$(CC) -c $(CFLAGS) $<
 
 clean:
 	rm -rf *.dSYM  # MacOS debugger info

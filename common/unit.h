@@ -1,6 +1,6 @@
 /* 
  * file: unit.h - header file for unit class
- * author: David Kantor
+ * authors: David Kantor, Irene Lam
  *
  * CS50 
  */
@@ -32,6 +32,7 @@ void print_unit(unit_t* unit);
 bool possibles_add(unit_t* unit, int val);
 bool possibles_remove(unit_t* unit, int val);
 bool possibles_contain(unit_t* unit, int val);
+bool possibles_isEmpty(unit_t* unit);
 int get_unit_val(unit_t *unit); 
 
 #endif // __UNIT_H
