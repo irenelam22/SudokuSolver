@@ -20,8 +20,8 @@ static int generate_column_num(int unit_num);
 static int generate_box_num(int row_num, int col_num);
 
 typedef struct unit{
-    int val;
-    int unit_num;
+    int val; // 1-9
+    int unit_num; // 1-81
     int row_num;
     int col_num;
     int box_num;
