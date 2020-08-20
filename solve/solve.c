@@ -31,10 +31,15 @@ unit_t* next_unit(puzzle_t* puzzle);
 
 int main(const int argc, const char *argv[])
 {
-    puzzle_t* puzzle = puzzle_new(); 
-    solve_puzzle(puzzle);
-    puzzle_print(puzzle);
-    // unit_t* cell = choose_unit(puzzle);
+    FILE* puzzle_file = fopen(argv[1], "r");
+    puzzle_t* puzzle = puzzle_load(puzzle_file); 
+    if (solve_puzzle(puzzle)) {
+        puzzle_print(puzzle);
+    } else {
+        printf("Puzzle Solve Failed\n");
+        puzzle_print(puzzle);
+    }
+    
     return 0;
 }
 
@@ -45,30 +50,60 @@ int main(const int argc, const char *argv[])
  */
 bool solve_puzzle(puzzle_t* puzzle)
 {
-    unit_t* unit = NULL;
-    while ((unit = next_unit(puzzle)) != NULL) {
-        counters_t* set = unit -> possibles;
-        if (set == NULL) {
-            set = possibles_create(puzzle, unit);
-        }
-        while (possibles_isEmpty(unit)){
-            unit = backtrace(puzzle, unit);
-        }
-        unit -> val = possibles_get_one(unit);
-        if (unit -> val == -1) {
-            fprintf(stderr, "Backtrace failed");
-            return false;
-        }
+    unit_t* unit = next_unit(puzzle);
+    if (unit == NULL) {
+        return true;
     }
-    return true;
-    
-    // for each cell
-        // if the possibles list is NULL, create the possibles list
-        // if the possibles list is empty, backtrace
-            // set possibles list to NULL, clean up
-            // go back one and remove from possibles list
-            // rinse and repeat
+    unit = puzzle[unit -> row_num][unit -> col_num];
+    int temp = 0;
+    possibles_create(puzzle, unit);
+    counters_print(unit -> possibles, stdout);
+    if (possibles_isEmpty(unit)) {
+        counters_t* possibles = unit -> possibles;
+        counters_delete(possibles);
+        unit -> val = 0;
+        return false;
+    }
+
+    // printf("For cell (%d, %d) with %d -- pos\n", unit -> row_num, unit -> col_num, unit -> val);
+    while ((temp = possibles_get_one(unit)) != -1){
+        unit ->val = temp;
+        printf("%d\n", temp);
+        if (solve_puzzle(puzzle)) {
+            printf("Attempt success with %d on (%d, %d)\n", temp, unit -> row_num, unit -> col_num);
+            return true;
+        }
+        possibles_remove(unit, temp);
+    }
+    unit -> val = 0;
+    return false;
 }
+// bool solve_puzzle(puzzle_t* puzzle)
+// {
+//     unit_t* unit = NULL;
+//     while ((unit = next_unit(puzzle)) != NULL) {
+//         unit = puzzle[unit -> row_num][unit -> col_num];
+//         unit->possibles = possibles_create(puzzle, unit);
+//         if (possibles_isEmpty(unit)){
+//             printf("starting prune %d\n", unit->val);
+//             unit = backtrace(puzzle, unit);
+//         }
+//         unit -> val = possibles_get_one(unit);
+//         if (unit -> val == -1) {
+//             fprintf(stderr, "Backtrace failed\n");
+//             return false;
+//         }
+//         // delete_unit(unit);
+//     }
+//     return true;
+    
+//     // for each cell
+//         // if the possibles list is NULL, create the possibles list
+//         // if the possibles list is empty, backtrace
+//             // set possibles list to NULL, clean up
+//             // go back one and remove from possibles list
+//             // rinse and repeat
+// }
 
 /*******backtrace********/
 /* Cleans up current unit and returns the previous unit
@@ -79,6 +114,7 @@ unit_t* backtrace(puzzle_t* puzzle, unit_t* unit)
 {
     counters_t* possibles = unit -> possibles;
     counters_delete(possibles);
+    unit -> val = 0;
     unit_t* new_unit = NULL;
     
     int row = unit -> row_num;
@@ -95,6 +131,7 @@ unit_t* backtrace(puzzle_t* puzzle, unit_t* unit)
     }
     if (row >= 0 && col >= 0) {
         new_unit = puzzle_get_unit(puzzle, row, col);
+        printf("Clearing unit num: %d\n", new_unit->unit_num);
         possibles_remove(new_unit, val);
         return new_unit;
     }
@@ -192,13 +229,16 @@ void first_valid_unit(void* ptr, unit_t* current_cell)
 {
     // EMPTY_CELL = 0;
     unit_t* unit = ptr;
-    if ((unit->val) != NULL) {
+    if (unit->possibles != NULL) {
         return;
     }
-    if ( current_cell -> val == 0) {
-        unit = current_cell;
-        
-        printf("%d", unit -> val);
+    if (current_cell -> val == 0) {
+        unit -> val = current_cell -> val;
+        unit -> unit_num = current_cell -> unit_num;
+        unit -> row_num = current_cell -> row_num;
+        unit -> col_num = current_cell -> col_num;
+        unit -> box_num = current_cell -> box_num;
+        unit -> possibles = current_cell -> possibles;
     }
 }
 
@@ -212,14 +252,15 @@ void first_valid_unit(void* ptr, unit_t* current_cell)
 */
 unit_t* next_unit(puzzle_t* puzzle) 
 {
-    unit_t* cell = NULL;
-    puzzle_iterate(puzzle, &cell, first_valid_unit);
-    if (cell == NULL) {
-        printf("cell is empty");
+    unit_t* cell = unit_new(1, 0);
+    counters_delete(cell->possibles);
+    cell->possibles = NULL;
+    puzzle_iterate(puzzle, cell, first_valid_unit);
+    if (cell->possibles == NULL) {
+        printf("cell is empty\n");
         return NULL;
     }
-    else {
-        printf("(%d, %d)", cell -> row_num, cell -> col_num);
-        return cell;
-    }
+    
+    printf("next_unit(%d, %d) -- ", cell -> row_num, cell -> col_num);
+    return cell;
 }

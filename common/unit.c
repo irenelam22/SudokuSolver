@@ -206,11 +206,13 @@ bool possibles_add(unit_t* unit, int val)
 
 bool possibles_remove(unit_t* unit, int val)
 {
-    if ( unit == NULL || val < 1 || val > 9){
+    if ( val == 0) {
+        return false;
+    }
+    if ( unit == NULL || val < 0 || val > 9){
         fprintf(stderr, "Invalid inputs for possible_remove\n");
         return false;
     }    
-
     if ( counters_get(unit->possibles, val) != 1){
         return false;
     }
@@ -222,21 +224,21 @@ bool possibles_remove(unit_t* unit, int val)
 void possibles_get_one_helper(void *arg, const int key, const int count)
 {
     int* ptr = arg;
-    if (ptr != NULL && count == 1) {
+    if (*ptr == 0 && count == 1) {
         *ptr = key;
     }
 }
 
 int possibles_get_one(unit_t* unit) 
 {
-    int* ptr = NULL;
+    int ptr = 0;
     counters_t* set = unit -> possibles;
-    counters_iterate(set, ptr, possibles_get_one_helper);
+    counters_iterate(set, &ptr, possibles_get_one_helper);
     if (ptr == NULL) {
         return -1;
     }
     else {
-        return *ptr;
+        return ptr;
     }
 }
 
@@ -274,9 +276,9 @@ bool possibles_isEmpty(unit_t* unit)
         return false;
     }
     counters_t* set = unit -> possibles;
-    char* temp = NULL;
-    counters_iterate(set, temp, possibles_isEmpty_helper);
-    return temp == NULL;
+    int temp = 0;
+    counters_iterate(set, &temp, possibles_isEmpty_helper);
+    return temp == 0;
 }
 
 /*******get_unit_val********/
