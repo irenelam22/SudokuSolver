@@ -57,7 +57,7 @@ bool solve_puzzle(puzzle_t* puzzle)
     unit = puzzle[unit -> row_num][unit -> col_num];
     int temp = 0;
     possibles_create(puzzle, unit);
-    counters_print(unit -> possibles, stdout);
+    // counters_print(unit -> possibles, stdout);
     if (possibles_isEmpty(unit)) {
         counters_t* possibles = unit -> possibles;
         counters_delete(possibles);
@@ -68,9 +68,9 @@ bool solve_puzzle(puzzle_t* puzzle)
     // printf("For cell (%d, %d) with %d -- pos\n", unit -> row_num, unit -> col_num, unit -> val);
     while ((temp = possibles_get_one(unit)) != -1){
         unit ->val = temp;
-        printf("%d\n", temp);
+        // printf("%d\n", temp);
         if (solve_puzzle(puzzle)) {
-            printf("Attempt success with %d on (%d, %d)\n", temp, unit -> row_num, unit -> col_num);
+            // printf("Attempt success with %d on (%d, %d)\n", temp, unit -> row_num, unit -> col_num);
             return true;
         }
         possibles_remove(unit, temp);
@@ -78,32 +78,6 @@ bool solve_puzzle(puzzle_t* puzzle)
     unit -> val = 0;
     return false;
 }
-// bool solve_puzzle(puzzle_t* puzzle)
-// {
-//     unit_t* unit = NULL;
-//     while ((unit = next_unit(puzzle)) != NULL) {
-//         unit = puzzle[unit -> row_num][unit -> col_num];
-//         unit->possibles = possibles_create(puzzle, unit);
-//         if (possibles_isEmpty(unit)){
-//             printf("starting prune %d\n", unit->val);
-//             unit = backtrace(puzzle, unit);
-//         }
-//         unit -> val = possibles_get_one(unit);
-//         if (unit -> val == -1) {
-//             fprintf(stderr, "Backtrace failed\n");
-//             return false;
-//         }
-//         // delete_unit(unit);
-//     }
-//     return true;
-    
-//     // for each cell
-//         // if the possibles list is NULL, create the possibles list
-//         // if the possibles list is empty, backtrace
-//             // set possibles list to NULL, clean up
-//             // go back one and remove from possibles list
-//             // rinse and repeat
-// }
 
 /*******backtrace********/
 /* Cleans up current unit and returns the previous unit
@@ -242,9 +216,6 @@ void first_valid_unit(void* ptr, unit_t* current_cell)
     }
 }
 
-/* (Good to have): prune technique, traverse the puzzle for 
-    unit with smallest possibles list */
-
 /*******next_unit********/
 /* Finds the first unit within a puzzle not yet filled in
  * Inputs: puzzle
@@ -257,10 +228,10 @@ unit_t* next_unit(puzzle_t* puzzle)
     cell->possibles = NULL;
     puzzle_iterate(puzzle, cell, first_valid_unit);
     if (cell->possibles == NULL) {
-        printf("cell is empty\n");
+        // printf("cell is empty\n");
         return NULL;
     }
     
-    printf("next_unit(%d, %d) -- ", cell -> row_num, cell -> col_num);
+    // printf("next_unit(%d, %d) -- ", cell -> row_num, cell -> col_num);
     return cell;
 }
