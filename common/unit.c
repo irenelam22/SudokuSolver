@@ -234,7 +234,7 @@ int possibles_get_one(unit_t* unit)
     int ptr = 0;
     counters_t* set = unit -> possibles;
     counters_iterate(set, &ptr, possibles_get_one_helper);
-    if (ptr == NULL) {
+    if (ptr == 0) {
         return -1;
     }
     else {

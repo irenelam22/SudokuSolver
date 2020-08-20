@@ -40,7 +40,9 @@ int main(const int argc, const char *argv[])
         puzzle_print(puzzle);
     }
     
+    // Clean up memory 
     fclose(puzzle_file);
+    puzzle_delete(puzzle); 
     return 0;
 }
 
@@ -51,17 +53,25 @@ int main(const int argc, const char *argv[])
  */
 bool solve_puzzle(puzzle_t* puzzle)
 {
-    unit_t* unit = next_unit(puzzle);
-    if (unit == NULL) {
+    // nextUnit: allocated memory for a new unit, then copies over the info of 
+        // the next non-zero value in the puzzle into the new memory
+    // unit: the gets the location and info of nextUnit in the actual puzzle 
+    unit_t* nextUnit = next_unit(puzzle);
+    if (nextUnit == NULL) {
         return true;
     }
-    unit = puzzle[unit -> row_num][unit -> col_num];
+    unit_t *unit = puzzle[nextUnit -> row_num][nextUnit -> col_num];
+    
+    // Delete the created unit, once we have the proper unit in the puzzle 
+    delete_unit(nextUnit); 
+
     int temp = 0;
     possibles_create(puzzle, unit);
     // counters_print(unit -> possibles, stdout);
     if (possibles_isEmpty(unit)) {
-        counters_t* possibles = unit -> possibles;
-        counters_delete(possibles);
+        // Don't delete possibles, because that happens in next_unit (I think)
+        // counters_t* possibles = unit -> possibles;
+        // counters_delete(possibles);
         unit -> val = 0;
         return false;
     }
@@ -230,6 +240,8 @@ unit_t* next_unit(puzzle_t* puzzle)
     puzzle_iterate(puzzle, cell, first_valid_unit);
     if (cell->possibles == NULL) {
         // printf("cell is empty\n");
+        // If the cell is empty, delete the allocated memory from above 
+        delete_unit(cell); 
         return NULL;
     }
     
