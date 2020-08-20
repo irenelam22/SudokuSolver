@@ -40,6 +40,7 @@ int main(const int argc, const char *argv[])
         puzzle_print(puzzle);
     }
     
+    fclose(puzzle_file);
     return 0;
 }
 
