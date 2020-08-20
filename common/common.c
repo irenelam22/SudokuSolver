@@ -4,7 +4,7 @@ Assignment: Final project – Group KIDD
 Members: David Kantor, David Perez Gonzalez, Irene Lam, and Kelly Westkaemper
 
 */
-
+typedef int make_iso_compilers_happy;
 // function prototypes
     // row_checker – see if this value appears in the given row
         // for ( int i = 0; i < 9; i++ ){

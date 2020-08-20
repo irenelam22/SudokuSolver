@@ -12,13 +12,16 @@ group: project-kidd
 #include "puzzle.h"
 #include "./unit.h"
 #include "../libcs50/file.h"
+#include "../libcs50/memory.h"
+
+// TODO: Should have some way for puzzle to designate non-changeable units (Irene)
+
 
 const int MAX_ROW = 9; 
 const int MAX_COL = 9; 
 // sizeof(unit_t) wasn't working, so I hard-coded it as a global variable
 const int UNIT_SIZE = 32; 
-
-typedef unit_t **puzzle_t; 
+const int EMPTY_CELL = 0;
 
 /*******puzzle_new********/
 /* Create new empty puzzle, where all values are 0
@@ -26,19 +29,19 @@ typedef unit_t **puzzle_t;
 puzzle_t* puzzle_new()
 {
     // Allocate space for entire puzzle 
-    puzzle_t* puzzle = malloc(MAX_ROW*MAX_COL*UNIT_SIZE); 
+    puzzle_t* puzzle = assertp(malloc(MAX_ROW*MAX_COL*UNIT_SIZE), "puzzle malloc failed"); 
     int unit_num = 1; 
     for (int i = 0; i < MAX_ROW; i++) {
 
         // Allocate space for each row 
-        puzzle[i] = malloc(MAX_COL*UNIT_SIZE); 
+        puzzle[i] = assertp(malloc(MAX_COL*UNIT_SIZE), "puzzle row malloc failed"); 
         
         for (int j = 0; j < MAX_COL; j++) {
             /* note: it would be easy to initialize each 
                unit with a given row, col number --> don't 
                need all the math / extra work in unit_new */
             
-            puzzle[i][j] = unit_new(unit_num, 0);
+            puzzle[i][j] = unit_new(unit_num, EMPTY_CELL);
             unit_num++; 
         }
     }
@@ -109,6 +112,37 @@ puzzle_t *puzzle_load(FILE *fp)
         fscanf(fp, "|"); 
     }
     return puzzle; 
+}
+
+/**********puzzle_get_unit*************/
+/* Returns the unit of a puzzle given its row and col number
+ * Inputs: puzzle, row number, col number of desired unit
+ * Output: unit
+*/
+unit_t* puzzle_get_unit(puzzle_t* puzzle, int row, int col)
+{
+    if (puzzle == NULL) {
+        fprintf(stderr, "puzzle_get_unit received a NULL puzzle");
+        return NULL;
+    }
+    if (row < 0 || row > 8) {
+        fprintf(stderr, "puzzle_get_unit received an out of bounds row");
+        return NULL;
+    }
+    if (col < 0 || col > 8 ) {
+        fprintf(stderr, "puzzle_get_unit received an out of bounds col");
+        return NULL;
+    }
+    return puzzle[row][col];
+}
+
+void puzzle_iterate(puzzle_t* puzzle, void *arg, void (*itemfunc)(void *arg, unit_t* cell))
+{
+    for (int i = 0; i < MAX_ROW; i++) {
+        for (int j = 0; j < MAX_COL; j++) {
+            itemfunc(arg, puzzle[i][j]);
+        }
+    }
 }
 
 /*********puzzle_delete************/

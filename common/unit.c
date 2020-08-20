@@ -19,17 +19,8 @@ static int generate_row_num(int unit_num);
 static int generate_column_num(int unit_num);
 static int generate_box_num(int row_num, int col_num);
 
-typedef struct unit{
-    int val;
-    int unit_num;
-    int row_num;
-    int col_num;
-    int box_num;
-    counters_t* possibles;
-
-} unit_t;
-
-unit_t* unit_new(int unit_num, int val){
+unit_t* unit_new(int unit_num, int val)
+{
     if ( unit_num < 1 || unit_num > 81){
         fprintf(stderr, "Invalid unit_num\n");
         return NULL;
@@ -73,7 +64,8 @@ unit_t* unit_new(int unit_num, int val){
     return unit;
 }
 
-static int generate_column_num(int unit_num){
+static int generate_column_num(int unit_num)
+{
     if ( unit_num < 1 || unit_num > 81){
         fprintf(stderr, "Invalid unit_num\n");
         return -1;
@@ -90,7 +82,8 @@ static int generate_column_num(int unit_num){
     return mod;
 }
 
-static int generate_row_num(int unit_num){
+static int generate_row_num(int unit_num)
+{
     if ( unit_num < 1 || unit_num > 81){
         fprintf(stderr, "Invalid unit_num\n");
         return -1;
@@ -105,7 +98,8 @@ static int generate_row_num(int unit_num){
     return mod;
 }
 
-static int generate_box_num(int col_num, int row_num){
+static int generate_box_num(int col_num, int row_num)
+{
     if ( row_num < 0 || row_num > 8){
         fprintf(stderr, "Invalid row number\n");
         return -1;
@@ -140,7 +134,8 @@ static int generate_box_num(int col_num, int row_num){
     return -1;
 }
 
-void delete_unit(unit_t* unit){
+void delete_unit(unit_t* unit)
+{
     if ( unit == NULL ){
         fprintf(stderr, "Invalid unit provided for deletion\n");
         return;
@@ -150,7 +145,8 @@ void delete_unit(unit_t* unit){
     return;
 }
 
-void print_unit(unit_t* unit){
+void print_unit(unit_t* unit)
+{
     if ( unit == NULL ){
         fprintf(stderr, "Invalid unit provided for printing\n");
         return;
@@ -193,7 +189,8 @@ void print_unit(unit_t* unit){
 
 }
 
-bool possibles_add(unit_t* unit, int val){
+bool possibles_add(unit_t* unit, int val)
+{
     if ( unit == NULL || val < 1 || val > 9){
         fprintf(stderr, "Invalid inputs for possible_add\n");
         return false;
@@ -207,12 +204,15 @@ bool possibles_add(unit_t* unit, int val){
     return true;
 }
 
-bool possibles_remove(unit_t* unit, int val){
-    if ( unit == NULL || val < 1 || val > 9){
+bool possibles_remove(unit_t* unit, int val)
+{
+    if ( val == 0) {
+        return false;
+    }
+    if ( unit == NULL || val < 0 || val > 9){
         fprintf(stderr, "Invalid inputs for possible_remove\n");
         return false;
     }    
-
     if ( counters_get(unit->possibles, val) != 1){
         return false;
     }
@@ -221,7 +221,29 @@ bool possibles_remove(unit_t* unit, int val){
     return true;
 }
 
-bool possibles_contain(unit_t* unit, int val){
+void possibles_get_one_helper(void *arg, const int key, const int count)
+{
+    int* ptr = arg;
+    if (*ptr == 0 && count == 1) {
+        *ptr = key;
+    }
+}
+
+int possibles_get_one(unit_t* unit) 
+{
+    int ptr = 0;
+    counters_t* set = unit -> possibles;
+    counters_iterate(set, &ptr, possibles_get_one_helper);
+    if (ptr == NULL) {
+        return -1;
+    }
+    else {
+        return ptr;
+    }
+}
+
+bool possibles_contain(unit_t* unit, int val)
+{
     if ( unit == NULL || val < 1 || val > 9){
         fprintf(stderr, "Invalid inputs for possibles_contain\n");
         return false;
@@ -232,6 +254,31 @@ bool possibles_contain(unit_t* unit, int val){
     } else{
         return false;
     }
+}
+
+void possibles_isEmpty_helper(void *arg, const int key, const int count)
+{
+    int* ptr = arg;
+    if (ptr != NULL && count != 0) {
+       *ptr = key;
+    }
+}
+
+/*******possibles_isEmpty********/
+/* Checks whether the unit's possibles list is empty
+ * Input: unit
+ * Output: true if empty, false otherwise
+ */
+bool possibles_isEmpty(unit_t* unit)
+{
+    if (unit == NULL) {
+        fprintf(stderr, "possibles_isEmpty received a NULL unit");
+        return false;
+    }
+    counters_t* set = unit -> possibles;
+    int temp = 0;
+    counters_iterate(set, &temp, possibles_isEmpty_helper);
+    return temp == 0;
 }
 
 /*******get_unit_val********/
