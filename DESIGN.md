@@ -2,7 +2,7 @@
 ### Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
 ### Dartmouth CS50, Summer 2020
  
-**Sudoku** supports two features. The program can either create a Sudoku puzzle with a unique solution from scratch, or it can take in a puzzle and output a solution. Rules of sudoku: (1) each row will contain the values 1-9 (no duplicates), (2) each column will contain the values 1-9 (no duplicates), and  (3) each box (3x3 grid) will contain the values 1-9 (no duplicates)
+**Sudoku** supports two features. The program can either create a Sudoku puzzle with a unique solution from scratch, or it can take in a puzzle and output a solution. Rules of sudoku: (1) each row will contain the values 1-9 (no duplicates), (2) each column will contain the values 1-9 (no duplicates), and  (3) each box (3x3 grid) will contain the values 1-9 (no duplicates). 
 
 </br>
 Please note: In our puzzles, the boxes are separated by dashed lines (see below).
@@ -43,7 +43,7 @@ Outputs:
 * If the user does not provide a valid writable file name, output an error message
 * If the user does not provide a file name, we will output to standard output
 * If the user provides a file name, we will output our puzzle to the provided file
-* Format:
+* Puzzle format:
 ```
    0 0 0 | 0 0 0 | 0 0 0
    0 0 0 | 0 0 0 | 0 0 0
@@ -116,49 +116,53 @@ V     0 0 0 | 0 0 0 | 0 0 0
 	* *puzzle_get_unit*: returns the unit in a given row and column number in a puzzle
 	* *puzzle_iterate*: allows the user to call a given itemfunc using a given arg on every unit in a puzzle 
 	* *puzzle_delete*: frees all allocated memory for a given puzzle
+* Additional methods, for creating/solving functionality: 
+   * *possibles_create*, which creates a new list of possibles based on values in the row, column,and box
+   * *possibles_isEmpty*, which checks whether there is a possible number that can be inserted at a particular unit
+   * *possibles_get_one*, which returns a possible number from the unit's possibles list
+   * *possibles_remove*, which removes the possiblity from the list upon failure
+   * *updating_possibles*, which updates a given unit's list of possibles based on values in the row, column and box (helper to possibles_create)
+   * *is_puzzle_solveable*, which checks whether a puzzle has a solution at any given iteration
+   * *next_unit*, which returns the next unit to be filled within the puzzle
  
 ### Functional decomposition into modules
  
 #### Create
-***main***:
-* Check arguments
-* Create a new empty puzzle
-* Call *fill_puzzle* to fill the puzzle randomly
-* Call *hide_nums* to remove values, ensuring there’s still only one possible solution to the puzzle 
-* Print the completed puzzle, and clean up memory 
-***fill_puzzle***: randomly add numbers into the puzzle, making sure the puzzle still follows the rules of sudoku, and return the puzzle once full 
+We anticipate the following modules or functions:
+
+1. *main*, which parses arguments, initializes modules, and calls create functionality  
+2. *fill_puzzle*, which randomly adds numbers into the puzzle, making sure the puzzle still follows the rules of sudoku, until the puzzle is full 
+3. *get_random_possible*, which finds a random number from a given unit's set of possibles 
+4. *has_one_solution*, which tests to see if a given puzzle has only one unique solution 
+5. *hide_nums*, which randomly selects values to remove from given puzzle while there’s still only one solution to the puzzle 
  
-***hide_nums***: randomly select values to remove from given puzzle while there’s still only one solution to the puzzle 
+Additionally, we introduce the below local data types:
+1. *unit*, which stores the value, row number, column number, box number, unit number, and possibles list
+   * where the possibles list is implemented with a *counterset*, to keep track of the list of possible numbers for each unit
+2. *puzzle*, which organizes all of the unit data structures into a 2D array
  
+Please see the *Major Data Structures* section for more details regarding these data structures. 
  
 #### Solve
+
 We anticipate the following modules or functions:
  
 1. *main*, which parses arguments and initializes other modules
 2. *solve_puzzle*, which recursively calls the following methods to fill in the missing numbers from the given puzzle (presumably incomplete)
 3. *backtrace*, which deletes/cleans up the current unit and returns a pointer to the previous modifiable pointer (if any)
-4. *possibles_create*, which creates a new list of possibles based on values in the row, column,and box
-5. *possibles_isEmpty*, which checks whether there is a possible number that can be inserted at a particular unit
-6. *possibles_get_one*, which returns a possible number from the unit's possibles list
-7. *possibles_remove*, which removes the possiblity from the list upon failure
-5. *updating_possibles*, which updates a given unit's list of possibles based on values in the row, column and box (helper to possibles_create)
-6. *is_puzzle_solveable*, which checks whether a puzzle has a solution at any given iteration
-7. *next_unit*, which returns the next unit to be filled within the puzzle
  
-And a helper module that provides data structures:
- 
-1. *counterset* to keep track of the list of possible numbers for each unit
- 
-Additionally, we introduce the below local data types:
-1. *unit*, which stores the value, row number, column number, box number, unit number, and possibles list
-2. *puzzle*, which organizes all of the unit data structures into a 2D array
- 
-Please see the *Major Data Structures* section for more details regarding these data structures.
+And solve will also rely on *unit*, *puzzle*, and *counterset*, as described above in create, and in the *Major Data Structures* section. 
  
  
 ### Dataflow through modules
  
 #### Create
+1. *main* checks arguments, creates a new empty puzzle, calls *fill_puzzle* to create a full puzzle, call *hide_nums* to remove numbers while there's still only one solution, prints the puzzle, then cleans up memory 
+2. *fill_puzzle* iterates through each empty element in the puzzle using *next_unit*, then calling *get_random_possible* to temporarily store random numbers in each box, and inserting/backtracing accordingly 
+3. *get_random_possible* randomly generates numbers 1-9, and returns the first one that is in the given unit's set of possibles 
+4. *hide_nums* randomly generates row/column numbers to remove numbers in the puzzle, calling *has_one_solution* to make sure the puzzle has one unique solution
+5. *has_one_solution* takes an incomplete puzzle and a complete puzzle, calls *fill_puzzle* to randomly fill the incomplete puzzle, then compares it to the complete puzzle to see if they got the same result
+
  
 #### Solve
 1. *main* parses arguments, validates them, loads the puzzle, and passes them to *solve_puzzle*
@@ -172,6 +176,17 @@ Please see the *Major Data Structures* section for more details regarding these 
 ### Pseudo code for logic/algorithmic flow
  
 ### Create
+The create portion of Sudoku will run as follows: 
+1. Execute from a command line with the usage syntax `./sudoku create FILE_NAME`
+2. Validate its command-line arguments: 
+   * Ensure `FILE_NAME` is a writable file
+3. Create an empty puzzle 
+4. Fill the puzzle randomly, using recursion
+   * Same process as the pseudocode described below in Solve under #4, except *fill_puzzle* gets random numbers from the possibles list
+5. Store the full puzzle in another puzzle struct, for later comparison with *has_one_solution*
+6. Hide numbers in the puzzle randomly one by one, comparing the current puzzle's solution to the complete puzzle to ensure there's only one unique solution 
+7. Print the puzzle to the given file, or if none given, to standard output
+8. Clean up memory 
  
 ### Solve
 The solve portion of Sudoku will run as follows:

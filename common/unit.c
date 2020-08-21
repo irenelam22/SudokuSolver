@@ -234,7 +234,7 @@ int possibles_get_one(unit_t* unit)
     int ptr = 0;
     counters_t* set = unit -> possibles;
     counters_iterate(set, &ptr, possibles_get_one_helper);
-    if (ptr == NULL) {
+    if (ptr == 0) {
         return -1;
     }
     else {
@@ -245,7 +245,7 @@ int possibles_get_one(unit_t* unit)
 bool possibles_contain(unit_t* unit, int val)
 {
     if ( unit == NULL || val < 1 || val > 9){
-        fprintf(stderr, "Invalid inputs for possibles_contain\n");
+        //fprintf(stderr, "Invalid inputs for possibles_contain\n");
         return false;
     }    
 

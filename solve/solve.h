@@ -25,9 +25,5 @@ Dartmouth CS50, Summer 2020
 
 void solve_puzzle(puzzle_t* puzzle);
 unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
-counters_t* possibles_create(puzzle_t* puzzle, unit_t* unit);
-void updating_possibles(puzzle_t* puzzle, unit_t* unit);
-bool is_puzzle_solveable(puzzle_t* puzzle);
-unit_t* next_unit(puzzle_t* puzzle);
 
-#endif	# SOLVE_H
+#endif
