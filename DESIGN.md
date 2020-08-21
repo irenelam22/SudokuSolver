@@ -2,7 +2,10 @@
 ### Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
 ### Dartmouth CS50, Summer 2020
  
-**Sudoku** supports two features. The program can either create a Sudoku puzzle with a unique solution from scratch, or it can take in a puzzle and output a solution.
+**Sudoku** supports two features. The program can either create a Sudoku puzzle with a unique solution from scratch, or it can take in a puzzle and output a solution. Rules of sudoku: (1) each row will contain the values 1-9 (no duplicates), (2) each column will contain the values 1-9 (no duplicates), and  (3) each box (3x3 grid) will contain the values 1-9 (no duplicates)
+
+</br>
+Please note: In our puzzles, the boxes are separated by dashed lines (see below).
  
  
 ### User interface
@@ -74,17 +77,21 @@ Each unit will have access to its *row number* (0-8), *column number* (0-8), *bo
 </br></br>For example, the unit with a unit number of 10 will be located in row 1, column 0, box 1, will have some value 1-9, and will have a list of possible numbers for that position. We are using 0-8 for row and column numbers to make it easier to loop through our 2d puzzle array. I will denote this example unit as "x" below
 
 ```
-   0 0 0 | 0 0 0 | 0 0 0
-   x 0 0 | 0 0 0 | 0 0 0
-   0 0 0 | 0 0 0 | 0 0 0
-   ---------------------
-   0 0 0 | 0 0 0 | 0 0 0
-   0 0 0 | 0 0 0 | 0 0 0
-   0 0 0 | 0 0 0 | 0 0 0
-   ---------------------
-   0 0 0 | 0 0 0 | 0 0 0
-   0 0 0 | 0 0 0 | 0 0 0
-   0 0 0 | 0 0 0 | 0 0 0
+Columns --> 
+Rows
+|
+|
+V     0 0 0 | 0 0 0 | 0 0 0
+      x 0 0 | 0 0 0 | 0 0 0
+      0 0 0 | 0 0 0 | 0 0 0
+      ---------------------
+      0 0 0 | 0 0 0 | 0 0 0
+      0 0 0 | 0 0 0 | 0 0 0
+      0 0 0 | 0 0 0 | 0 0 0
+      ---------------------
+      0 0 0 | 0 0 0 | 0 0 0
+      0 0 0 | 0 0 0 | 0 0 0
+      0 0 0 | 0 0 0 | 0 0 0
 ```
 
 * Methods
@@ -150,7 +157,6 @@ Please see the *Major Data Structures* section for more details regarding these 
  
  
 ### Dataflow through modules
-Not sure how to differentiate this section from the functional decomposition into modules section.
  
 #### Create
  
@@ -170,7 +176,7 @@ Not sure how to differentiate this section from the functional decomposition int
 ### Solve
 The solve portion of Sudoku will run as follows:
  
-1. Execute from a command line with usage syntax `./solve PUZZLE_FILE_NAME`
+1. Execute from a command line with usage syntax `./sudoku solve PUZZLE_FILE_NAME`
 2. Validate its command-line arguments:
    1. Ensure `PUZZLE_FILE_NAME` is the pathname for an existing readable file, formatted as a puzzle
 3. Load the index from `PUZZLE_FILE_NAME` into an internal puzzle data structure.
@@ -193,18 +199,60 @@ The solve portion of Sudoku will run as follows:
  
 ### Testing plan
 From a high level, we should be able to test our creator and solver pretty easily by creating a few puzzles and passing them into our solver to see if we get completed puzzles as the output. Of course, we will want to test each piece individually, as well, and we will want to do thorough error checking. We can also create a fuzzy testing file which randomly generates a few puzzles and passes them into our solver to make sure that it works properly. 
+
+##### Unit Testing
+We will test some of the individual functions in puzzle solve and create. </br> </br>
+Examples: 
+* Once we have a completed puzzle, before we “hide” some of the values, we will scan through each element of the puzzle to make sure it satisfies the sudoku requirements. If our puzzle is valid, then we will move forward. 
+* Check if possibles list is updating correctly
+* Check if puzzle is inserting numbers correctly
+* Check if backtracking is working
+
+
 #### Create
 ##### Error Checking
 * Incorrect number of arguments
 * Invalid arguments
-##### Unit Testing
-Once we have a completed puzzle, before we “hide” some of the values, we will scan through each element of the puzzle to make sure it satisfies the sudoku requirements. If our puzzle is valid, then we will move forward. 
+   * Non-writable file
  
 #### Solve
 ##### Error checking
 * Incorrect number of arguments
 * Invalid arguments
+   * Empty file
+   * Non-readable file
 * Pass in an invalid puzzle
+   * Row, column, and/or box violations with given numbers
+   Example: 
+```
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 2 2 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+   ---------------------
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+   ---------------------
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+
+```
+* Puzzle with incorrect formatting
+```
+
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+   ---------------------
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+   0 0 0 | 0 0 0 | 0 0 0
+   ---------------------
+   0 0 0 | 0 0 0 | 0 0 0
+
+ ```
+
  
  
 
