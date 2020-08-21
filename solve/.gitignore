@@ -2,3 +2,6 @@
 *.o
 .DS_Store
 *.dSYM
+core
+solve
+.easy.txt.swp

@@ -1,6 +1,6 @@
 /* 
  * file: unit.h - header file for unit class
- * author: David Kantor
+ * authors: David Kantor, Irene Lam
  *
  * CS50 
  */
@@ -16,7 +16,14 @@
 #ifndef __UNIT_H
 #define __UNIT_H
 
-typedef struct unit unit_t;
+typedef struct unit{
+    int val;
+    int unit_num;
+    int row_num;
+    int col_num;
+    int box_num;
+    counters_t* possibles;
+} unit_t;
 
 unit_t* unit_new(int unit_num, int val);
 
@@ -25,7 +32,9 @@ void print_unit(unit_t* unit);
 bool possibles_add(unit_t* unit, int val);
 bool possibles_remove(unit_t* unit, int val);
 bool possibles_contain(unit_t* unit, int val);
+bool possibles_isEmpty(unit_t* unit);
 int get_unit_val(unit_t *unit); 
+int possibles_get_one(unit_t* unit);
 
 #endif // __UNIT_H
 
