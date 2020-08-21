@@ -245,7 +245,7 @@ int possibles_get_one(unit_t* unit)
 bool possibles_contain(unit_t* unit, int val)
 {
     if ( unit == NULL || val < 1 || val > 9){
-        fprintf(stderr, "Invalid inputs for possibles_contain\n");
+        //fprintf(stderr, "Invalid inputs for possibles_contain\n");
         return false;
     }    
 
