@@ -13,7 +13,7 @@ Members: David Kantor, David Perez Gonzalez, Irene Lam, and Kelly Westkaemper
 // function prototypes
 
 bool fill_puzzle(puzzle_t *puzzle); 
-bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz); 
+bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown); 
 bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz); 
 void copy_puzzle(void *arg, unit_t* unit); 
 
@@ -52,7 +52,7 @@ int main(const int argc, const char *argv[])
 
     // Keep removing numbers while there's still only one solution
     // and while we have <= 41 showing numbers
-    while (!hide_nums(puzzle, fullpuzz)) {
+    while (!hide_nums(puzzle, fullpuzz, 20)) {
         puzzle_iterate(fullpuzz, puzzle, copy_puzzle); 
     }
 
@@ -69,6 +69,8 @@ int main(const int argc, const char *argv[])
 /********gen_random_num*********/
 /* random number generator, used because 
 *  rand() wasn't producing random enough numbers
+* 
+*  code inspired by cs.yale.edu
 */
 unsigned int gen_random_num(int min, int max)
 {
@@ -192,11 +194,11 @@ bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz)
 * 
 *  if the finished puzzle has <= 41 numbers showing by the end, it returns false
 */
-bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz)
+bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown)
 {
     int n = 81; 
     int row, col, number; 
-    while (has_one_solution(puzzle, fullpuzz) && n > 20) {
+    while (has_one_solution(puzzle, fullpuzz) && n > minshown) {
         // Get random position in puzzle to remove from 
         row = gen_random_num(0, 8); 
         col = gen_random_num(0, 8);
