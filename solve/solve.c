@@ -24,10 +24,25 @@ unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
 
 int main(const int argc, const char *argv[])
 {
-    // Need argument checking here
+    // Error-handling
+    if (argc < 2) {
+        fprintf(stderr, "Insufficient number of arguments\n");
+        return 1;
+    }
+    if (argc > 2) {
+        fprintf(stderr, "Too many arguments provided\n");
+        return 1;
+    }
 
+    // Attempt to open file
     FILE* puzzle_file = fopen(argv[1], "r");
+    if (puzzle_file == NULL) {
+        fprintf(stderr, "Invalid puzzle file passed\n");
+        return 1;
+    }
+
     puzzle_t* puzzle = puzzle_load(puzzle_file); 
+
     if (solve_puzzle(puzzle)) {
         puzzle_print(stdout, puzzle);
     } else {
@@ -48,9 +63,7 @@ int main(const int argc, const char *argv[])
  */
 bool solve_puzzle(puzzle_t* puzzle)
 {
-    // nextUnit: allocated memory for a new unit, then copies over the info of 
-        // the next non-zero value in the puzzle into the new memory
-    // unit: the gets the location and info of nextUnit in the actual puzzle 
+    // Retrieve next unit (if any)
     unit_t* nextUnit = next_unit(puzzle);
     if (nextUnit == NULL) {
         return true;
@@ -64,7 +77,6 @@ bool solve_puzzle(puzzle_t* puzzle)
     possibles_create(puzzle, unit);
     // counters_print(unit -> possibles, stdout);
     if (possibles_isEmpty(unit)) {
-        // Don't delete possibles, because that happens in next_unit (I think)
         // counters_t* possibles = unit -> possibles;
         // counters_delete(possibles);
         unit -> val = 0;
