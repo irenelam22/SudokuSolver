@@ -1,6 +1,7 @@
 PROG = puzzle_unittest
 OBJS = puzzle.o unit.o puzzle_unittest.o
 LIB = common.a
+LIBS = puzzle.o unit.o
 
 CFLAGS = -Wall -pedantic -std=c11 -ggdb $(FLAGS)
 CC = gcc
@@ -14,9 +15,11 @@ puzzle.o: puzzle.h unit.h
 puzzle_unittest.o: puzzle.h unit.h
 
 puzzle_unittest: puzzle_unittest.o $(LIBS)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ ../libcs50/libcs50.a  -o $@ 
 
-.PHONY: clean
+.PHONY: test clean
+
+test: puzzle_unittest
 
 # clean up after our compilation
 clean:
