@@ -1,31 +1,31 @@
-PROG = test
-OBJS = test.o libcs50/counters.o
-C = common
-LIBS = $(C)/common.a
+# Makefile for CS50 Sudoku Final Project
+#
+# Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
+# CS 50, Summer 2020
 
-CFLAGS = -Wall -pedantic -std=c11 -ggdb -I$(C)
-CC = gcc
-MAKE = make
+.PHONY: all valgrind clean
 
-$(PROG): $(OBJS)
-	$(CC) $(CFLAGS) $^ $(LIBS) -o $@ 
+############## default: make all libs and programs ##########
+all: 
+	make -C libcs50
+	make -C common
+	make -C solve
+	make -C create
 
-puzzletest: puzzletest.o common/puzzle.o common/unit.o libcs50/libcs50.a
-	$(CC) $(CFLAGS) $^ -o $@
+############## test: make all tests ##########
+test:
+	make -C solve test
+	
 
-puzzletest.o: $(C)/puzzle.h
+############## valgrind all programs ##########
+valgrind: all
+	make -C solve valgrind
+	make -C create valgrind
 
-.PHONY: clean valgrind
-
-libcs50/counters.o: libcs50/counters.h
-
-# test: $(PROG) 
-# 	./$(PROG) 
-
-valgrind: $(PROG) 
-	valgrind ./$(PROG) 
-
+############## clean  ##########
 clean:
-	rm -rf *.dSYM  # MacOS debugger info
-	rm -f *~ *.o
-	rm -f $(PROG)
+	rm -f *~
+	make -C libcs50 clean
+	make -C common clean
+	make -C solve clean
+	make -C create clean
