@@ -17,30 +17,49 @@ bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
 bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz); 
 void copy_puzzle(void *arg, unit_t* unit); 
 
-int main(const int argc, const char *argv[])
+void create(char* file_name, int indicator)
 {
+    FILE* fp;
+    char* file_name_copy;
+    if ( indicator == 1){
+        fp = stdout;
+    }
+    else{
+        file_name_copy = malloc(strlen(file_name) + 1);
+        if ( file_name_copy == NULL ){
+            fprintf(stderr, "Failed to allocate memory for file.\n");
+            return;
+        }
+        strcpy(file_name_copy, file_name);
+        if ( (fp = fopen(file_name_copy, "w")) == NULL) {
+            fprintf(stderr, "%s is not a writeable file\n", file_name_copy); 
+            free(file_name_copy); 
+            return; 
+        }
+
+    }
     // Check arguments 
-    FILE *fp; 
-    if (argc == 2) {
-        char *filename = malloc(strlen(argv[1])+1); 
-        if (filename == NULL) {
-            fprintf(stderr, "Failed to allocate memory for file\n"); 
-            return 2; 
-        }
-        strcpy(filename, argv[1]); 
-        if ( (fp = fopen(filename, "w")) == NULL) {
-            fprintf(stderr, "%s is not a writeable file\n", filename); 
-            free(filename); 
-            return 2; 
-        }
-    }
-    else if (argc == 1) {
-        fp = stdout; 
-    }
-    else {
-        fprintf(stderr, "Usage: ./create [filename]\n"); 
-        return 1; 
-    }
+    // FILE *fp; 
+    // if (argc == 2) {
+    //     char *filename = malloc(strlen(argv[1])+1); 
+    //     if (filename == NULL) {
+    //         fprintf(stderr, "Failed to allocate memory for file\n"); 
+    //         return 2; 
+    //     }
+    //     strcpy(filename, argv[1]); 
+    //     if ( (fp = fopen(filename, "w")) == NULL) {
+    //         fprintf(stderr, "%s is not a writeable file\n", filename); 
+    //         free(filename); 
+    //         return 2; 
+    //     }
+    // }
+    // else if (argc == 1) {
+    //     fp = stdout; 
+    // }
+    // else {
+    //     fprintf(stderr, "Usage: ./create [filename]\n"); 
+    //     return 1; 
+    // }
 
     // Create empty puzzle and randomly fill in all the values 
     puzzle_t *puzzle = puzzle_new(); 
@@ -62,7 +81,10 @@ int main(const int argc, const char *argv[])
     // Clean everything up from memory 
     puzzle_delete(puzzle);
     puzzle_delete(fullpuzz);  
-    if (argc == 2) {fclose(fp);}
+    // if (argc == 2) {fclose(fp);}
+    if ( indicator == 0){
+        fclose(fp);
+    }
 
 }
 

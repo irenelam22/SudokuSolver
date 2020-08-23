@@ -23,6 +23,7 @@ Dartmouth CS50, Summer 2020
 #ifndef SOLVE_H
 #define SOLVE_H
 
+void solve(char* file_name);
 void solve_puzzle(puzzle_t* puzzle);
 unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
 
