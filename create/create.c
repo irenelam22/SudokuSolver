@@ -19,6 +19,10 @@ void copy_puzzle(void *arg, unit_t* unit);
 
 void create(char* file_name, int indicator)
 {
+    if ( indicator < 0 || indicator > 1){
+        fprintf(stderr, "Error with indicator\n");
+        return;
+    }
     FILE* fp;
     char* file_name_copy;
     if ( indicator == 1){
@@ -84,7 +88,9 @@ void create(char* file_name, int indicator)
     // if (argc == 2) {fclose(fp);}
     if ( indicator == 0){
         fclose(fp);
+        free(file_name_copy);
     }
+    
 
 }
 

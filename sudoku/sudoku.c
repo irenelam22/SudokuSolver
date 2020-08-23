@@ -18,7 +18,7 @@ static void process_arguments(int argc, char* argv[], char** command, char** fil
 int main(const int argc, char *argv[]){
     char* command = NULL;
     char* file_name = NULL;
-    int indicator; // equals one if file_name is stdout
+    int indicator = 0; // equals one if file_name is stdout
 
     process_arguments(argc, argv, &command, &file_name);
     if ( strcmp(command, "create") == 0){
