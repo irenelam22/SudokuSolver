@@ -19,24 +19,34 @@ Dartmouth CS50, Summer 2020
 bool solve_puzzle(puzzle_t* puzzle);
 unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
 
-int main(const int argc, const char *argv[])
+void solve(char* file_name)
 {
-    // Error-handling
-    if (argc < 2) {
-        fprintf(stderr, "Insufficient number of arguments\n");
-        return 1;
-    }
-    if (argc > 2) {
-        fprintf(stderr, "Too many arguments provided\n");
-        return 1;
+    if ( file_name == NULL ){
+        fprintf(stderr, "Please provide a puzzle file to solve\n");
+        return;
     }
 
-    // Attempt to open file
-    FILE* puzzle_file = fopen(argv[1], "r");
-    if (puzzle_file == NULL) {
+    FILE* puzzle_file = fopen(file_name, "r");
+    if ( puzzle_file == NULL ){
         fprintf(stderr, "Invalid puzzle file passed\n");
-        return 1;
+        return;
     }
+    // Error-handling
+    // if (argc < 2) {
+    //     fprintf(stderr, "Insufficient number of arguments\n");
+    //     return 1;
+    // }
+    // if (argc > 2) {
+    //     fprintf(stderr, "Too many arguments provided\n");
+    //     return 1;
+    // }
+
+    // // Attempt to open file
+    // FILE* puzzle_file = fopen(argv[1], "r");
+    // if (puzzle_file == NULL) {
+    //     fprintf(stderr, "Invalid puzzle file passed\n");
+    //     return 1;
+    // }
 
     puzzle_t* puzzle = puzzle_load(puzzle_file); 
 
@@ -50,7 +60,7 @@ int main(const int argc, const char *argv[])
     // Clean up memory 
     fclose(puzzle_file);
     puzzle_delete(puzzle); 
-    return 0;
+    return;
 }
 
 /*******solve_puzzle********/
