@@ -1,13 +1,14 @@
 /*
 
 File: create.c
-Description: In this file, we have a main "create" function, and a few helper functions. Effectively, the create program
-will be called by our sudoku program to create a new sudoku puzzle. The user will have the option either to provide
-a file to which the output will be sent, or to provide no file name (the output will be sent to stdout)
+Description: In this file, we have a main "create" function, and a few helper 
+functions. Effectively, the create program will be called by our sudoku program 
+to create a new sudoku puzzle. The user will have the option either to provide
+a file to which the output will be sent, or to provide no file name (the output 
+will be sent to stdout)
 
-Assignment: Final project – Group KIDD
-Members: David Kantor, David Perez Gonzalez, Irene Lam, and Kelly Westkaemper
-
+Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
+Dartmouth CS50, Summer 2020
 */
 
 #include <stdio.h>
@@ -22,8 +23,13 @@ static bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
 static bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz); 
 static void copy_puzzle(void *arg, unit_t* unit); 
 
+/******** create *********/
 /*
-Please refer to create.h for an overview of our create function
+Creates a random sudoku puzzle
+Inputs:
+- file_name (if any) to print the sudoku puzzle to
+- indicator to represent whether a filename was given
+Output: none (prints to the given file/stdout)
 */
 void create(char* file_name, int indicator)
 {
@@ -91,7 +97,9 @@ unsigned int gen_random_num(int min, int max)
 
 /*********get_random_possible**********/
 /* get random number from the unit's possibles 
-*/
+ * Input: unit to return a random possible number from (if any)
+ * Output: a random number from the unit's possibles
+ */
 int get_random_possible(unit_t *unit)
 {
     if ( unit == NULL ){
