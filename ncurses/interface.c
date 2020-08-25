@@ -4,28 +4,32 @@
 
 #include "../common/puzzle.c"
 
+// Pretty print method
 void pprint(puzzle_t *puzzle, unit_t* current_unit)
 {
     int MAX_ROW = 9;
+    int MAX_COL = 23;
     for (int i = 0; i < MAX_ROW; i++) {
         if (i == 3 || i == 6) {
-            mvaddstr(i + i / 3 - 1, 0, "----------------------");
+            mvaddstr(i + i / 3 - 1, 0, "-----------------------");
             // fprintf(fp, "---------------------\n"); 
         }
+        
         for (int j = 0; j < MAX_COL; j++) {
-            if (j == 3 || j == 6) {
-                mvaddch(i + i / 3, 1 + j + 2 * j / 3 + 1, '|');
-                // fprintf(fp, "| "); 
+            if (j == 7 || j == 15) {
+                mvaddch(i + i/3, j, '|');
             }
-            mvaddch(j + j / 3, 1 + 2 * i + 2 * (i - 1) / 3, '?');
-            // mvaddch(j, i, ' ');
-            // fprintf(fp, "%d ", get_unit_val(puzzle[i][j])); 
+            else if (j%2 == 1) {
+                mvaddch(i + i / 3, j, '?');
+            }
         }
-        // fprintf(fp, "\n");
     }
 
     if (current_unit != NULL) {
-        // print paren around position
+        int curr_row = current_unit -> row_num;
+        int curr_col = current_unit -> col_num;
+        mvaddstr(curr_row, curr_col-1, '(');
+        mvaddstr(curr_row, curr_col+1, ')');
     }
 }
 
@@ -58,6 +62,8 @@ int main(void)
         pprint(puzzle, NULL);
         refresh();
         int ch = getch();
+        // replace with switch case
+        // Currently exits
         if(ch == KEY_LEFT || ch == 'q') {
             printw("Left arrow is pressed\n");
             break;
@@ -70,6 +76,7 @@ int main(void)
         }
     }
 
+    // Replace with final puzzle/message
     mvaddstr(maxlines, 2, "Final Puzzle: (currently not implemented, press randomly to exit");
     refresh();
     getch();
