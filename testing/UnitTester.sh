@@ -42,20 +42,20 @@ echo "Testing Sudoku Solve with the created file if nothing went wrong check: cr
 echo "Now testing Sudoku Solver with edge cases"
 
 echo "Passing invalid Puzzle"
-../sudoku/sudoku solve invalid_puzzle.txt
+../sudoku/sudoku solve ../puzzlefiles/badpuzzle.txt
 
 #uncomment these two when we have a catcher for incorrect format errors and out of bound number entries
 
 # echo "Passing invalid Puzzle Format"
-# ../sudoku/sudoku solve invalid_format_puzzle.txt
+# ../sudoku/sudoku solve ../puzzlefiles/invalid_format_puzzle.txt
 
 # echo "Passing a sudoku with values outside of the bounds"
-# ../sudoku/sudoku solve wrong_num.txt
+# ../sudoku/sudoku solve ../puzzlefiles/wrong_num.txt
 
 
 echo "Passing 2 empty puzzles"
-../sudoku/sudoku solve empty_puzzle.txt >> nonunique.out 
-../sudoku/sudoku solve empty_puzzle.txt >> nonunique2.out 
+../sudoku/sudoku solve ../puzzlefiles/empty.txt >> nonunique.out 
+../sudoku/sudoku solve ../puzzlefiles/empty.txt >> nonunique2.out 
 
 
 if diff --brief nonunique.out nonunique2.out; then
@@ -65,19 +65,20 @@ else
 fi
 
 echo "Testing 2 valid puzzles"
-../sudoku/sudoku solve puzzle_test1.txt >> puzzle_test1_solution.out
-../sudoku/sudoku solve puzzle_test2.txt >> puzzle_test2_solution.out
+../sudoku/sudoku solve ../puzzlefiles/easy.txt >> puzzle_test1_solution.out
+../sudoku/sudoku solve ../puzzlefiles/test1.txt >> puzzle_test2_solution.out
 
 echo "Comparing solver solution to actual solution"
 
-if diff puzzle_test1_solution.out puzzle1_sol.txt; then
+if diff puzzle_test1_solution.out ../puzzlefiles/puzzle1_sol.txt; then
 echo "No differences between puzzle1 solver generated solution and solution "
 fi 
 
-if diff --brief puzzle_test1_solution.out puzzle1_sol.txt; then 
+if diff --brief puzzle_test2_solution.out ../puzzlefiles/puzzle2_sol.txt; then 
 echo "No differences between puzzle2 solver generated solution and solution "
 fi 
 
+#comment these removes out if you wanna see the solutions files generated
 rm -rf create_*
 rm -rf puzzle_test1_solution*
 rm -rf puzzle_test2_solution*

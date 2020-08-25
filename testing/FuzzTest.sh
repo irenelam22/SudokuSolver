@@ -6,6 +6,7 @@
 
 if [ $# -ne 1 ]; then 
     echo "Error invalid number of arguments "
+    exit 1
 fi 
 
 echo "Generating $1 tests "
@@ -18,4 +19,4 @@ do
     ../sudoku/sudoku solve testing.txt >> fuzz.out
 done
 
-echo "Fuzz Test done"
+echo "Fuzz Test Done: Please look at fuzz.out for solutions"
