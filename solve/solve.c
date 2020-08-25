@@ -15,10 +15,7 @@ Dartmouth CS50, Summer 2020
 #include "../libcs50/file.h"
 #include "../libcs50/memory.h"
 #include "../libcs50/counters.h"
-
-// const int EMPTY_CELL = 0;
-// const int MAX_ROW = 9; 
-// const int MAX_COL = 9; 
+ 
 bool solve_puzzle(puzzle_t* puzzle);
 unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
 
@@ -75,20 +72,14 @@ bool solve_puzzle(puzzle_t* puzzle)
 
     int temp = 0;
     possibles_create(puzzle, unit);
-    // counters_print(unit -> possibles, stdout);
     if (possibles_isEmpty(unit)) {
-        // counters_t* possibles = unit -> possibles;
-        // counters_delete(possibles);
         unit -> val = 0;
         return false;
     }
 
-    // printf("For cell (%d, %d) with %d -- pos\n", unit -> row_num, unit -> col_num, unit -> val);
     while ((temp = possibles_get_one(unit)) != -1){
         unit ->val = temp;
-        // printf("%d\n", temp);
         if (solve_puzzle(puzzle)) {
-            // printf("Attempt success with %d on (%d, %d)\n", temp, unit -> row_num, unit -> col_num);
             return true;
         }
         possibles_remove(unit, temp);

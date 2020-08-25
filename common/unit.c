@@ -249,11 +249,7 @@ bool possibles_contain(unit_t* unit, int val)
         return false;
     }    
 
-    if ( counters_get(unit->possibles, val) != 0){
-        return true;
-    } else{
-        return false;
-    }
+    return counters_get(unit->possibles, val) != 0;
 }
 
 void possibles_isEmpty_helper(void *arg, const int key, const int count)
