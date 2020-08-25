@@ -14,13 +14,16 @@ group: project-kidd
 #include "./unit.h"
 #include "../libcs50/counters.h"
 
-// local functions
+// local function prototypes
 static int generate_row_num(int unit_num);
 static int generate_column_num(int unit_num);
 static int generate_box_num(int row_num, int col_num);
 
-unit_t* unit_new(int unit_num, int val)
-{
+/******* unit_new ********/
+/*
+ * Please refer to unit.h for function description
+*/
+unit_t* unit_new(int unit_num, int val){
     if ( unit_num < 1 || unit_num > 81){
         fprintf(stderr, "Invalid unit_num\n");
         return NULL;
@@ -64,38 +67,45 @@ unit_t* unit_new(int unit_num, int val)
     return unit;
 }
 
-static int generate_column_num(int unit_num)
-{
-    if ( unit_num < 1 || unit_num > 81){
+/******* generate_column_num ********/
+/*
+ * Local helper function to determine the column number given the unit number. We will have nine columns numbered 
+ * 0-8. We will use 0-8 to make it easier to insert into our 2D array for our puzzle.
+*/
+static int generate_column_num(int unit_num){
+    if ( unit_num < 1 || unit_num > 81){        // make sure our unit number is between 1 and 81
         fprintf(stderr, "Invalid unit_num\n");
         return -1;
     }
 
-    // note: keeping row numbers 0-8 (should be easier for our 2d array)
-    int mod = unit_num % 9;
-    if ( mod == 0){
-        mod = 8;
+    int column = unit_num % 9;                     // calculate the mod to determine the given column number          
+    if ( column == 0){                             // if it's in the last row...      
+        column = 8;                                // assign it column number 8
     } else{
-        mod --;
+        column --;                                 // otherwise, decrement the mod to make our columns ordered 0-8
     }
 
-    return mod;
+    return column;
 }
 
-static int generate_row_num(int unit_num)
-{
-    if ( unit_num < 1 || unit_num > 81){
+/******* generate_row_num ********/
+/*
+ * Local helper function to determine the row number given the unit number. We will have nine rows numbered 
+ * 0-8. We will use 0-8 to make it easier to insert into our 2D array for our puzzle.
+*/
+static int generate_row_num(int unit_num){
+    if ( unit_num < 1 || unit_num > 81){         // make sure our unit number is between 1 and 81
         fprintf(stderr, "Invalid unit_num\n");
         return -1;
     }
 
     // note: keeping column numbers 0-8 (should be easier for our 2d array)
-    int mod = unit_num / 9;
-    if ( unit_num % 9 == 0){
-        mod --;
+    int row = unit_num / 9;
+    if ( unit_num % 9 == 0){                    // if it's the last 
+        row --;
     }
 
-    return mod;
+    return row;
 }
 
 static int generate_box_num(int col_num, int row_num)

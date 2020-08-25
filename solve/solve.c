@@ -15,50 +15,38 @@ Dartmouth CS50, Summer 2020
 #include "../libcs50/file.h"
 #include "../libcs50/memory.h"
 #include "../libcs50/counters.h"
- 
+
+// local function prototypes
 bool solve_puzzle(puzzle_t* puzzle);
 unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
 
-void solve(char* file_name)
-{
-    if ( file_name == NULL ){
+/*******solve********/
+/*
+* Please refer to solve.h for an overview of our main solve function
+*/
+void solve(char* file_name) {
+    if ( file_name == NULL ){                                       // check arguments
         fprintf(stderr, "Please provide a puzzle file to solve\n");
         return;
     }
 
-    FILE* puzzle_file = fopen(file_name, "r");
+    FILE* puzzle_file = fopen(file_name, "r");               // make sure the provided file is readable
     if ( puzzle_file == NULL ){
         fprintf(stderr, "Invalid puzzle file passed\n");
         return;
     }
-    // Error-handling
-    // if (argc < 2) {
-    //     fprintf(stderr, "Insufficient number of arguments\n");
-    //     return 1;
-    // }
-    // if (argc > 2) {
-    //     fprintf(stderr, "Too many arguments provided\n");
-    //     return 1;
-    // }
 
-    // // Attempt to open file
-    // FILE* puzzle_file = fopen(argv[1], "r");
-    // if (puzzle_file == NULL) {
-    //     fprintf(stderr, "Invalid puzzle file passed\n");
-    //     return 1;
-    // }
+    puzzle_t* puzzle = puzzle_load(puzzle_file);             // create our puzzle
 
-    puzzle_t* puzzle = puzzle_load(puzzle_file); 
-
-    if (solve_puzzle(puzzle)) {
-        puzzle_print(stdout, puzzle);
-    } else {
+    if (solve_puzzle(puzzle)) {                              // try to solve the puzzle
+        puzzle_print(stdout, puzzle);                        // if we solved it... display
+    } 
+    else {                                                   // otherwise, note that the puzzle solve failed
         printf("Puzzle Solve Failed\n");
         puzzle_print(stdout, puzzle);
     }
     
-    // Clean up memory 
-    fclose(puzzle_file);
+    fclose(puzzle_file);                                     // Clean up memory 
     puzzle_delete(puzzle); 
     return;
 }
@@ -68,34 +56,36 @@ void solve(char* file_name)
  * Inputs: puzzle
  * Output: true if solved, false otherwise
  */
-bool solve_puzzle(puzzle_t* puzzle)
-{
-    // Retrieve next unit (if any)
-    unit_t* nextUnit = next_unit(puzzle);
+bool solve_puzzle(puzzle_t* puzzle){
+    if ( puzzle == NULL ){
+        fprintf(stderr, "Invalid parameters for solve_puzzle\n");
+        return false;
+    }
+    unit_t* nextUnit = next_unit(puzzle);                           // Retrieve next unit (if any)
     if (nextUnit == NULL) {
         return true;
     }
-    unit_t *unit = puzzle[nextUnit -> row_num][nextUnit -> col_num];
+    unit_t *unit = puzzle[nextUnit -> row_num][nextUnit -> col_num]; // extract the nextUnit from the puzzle
     
-    // Delete the created unit, once we have the proper unit in the puzzle 
-    delete_unit(nextUnit); 
+  
+    delete_unit(nextUnit);               // Delete the created unit, once we have the proper unit in the puzzle 
 
     int temp = 0;
-    possibles_create(puzzle, unit);
-    if (possibles_isEmpty(unit)) {
-        unit -> val = 0;
-        return false;
+    possibles_create(puzzle, unit);                     // create the possibles list
+    if (possibles_isEmpty(unit)) {                      // if there are no possible values...
+        unit -> val = 0;                                // reset the unit's value to zero
+        return false;                                   // note that this puzzle is not solved
     }
 
-    while ((temp = possibles_get_one(unit)) != -1){
-        unit ->val = temp;
-        if (solve_puzzle(puzzle)) {
-            return true;
+    while ((temp = possibles_get_one(unit)) != -1){     // while we can randomly extract from our possibles list
+        unit -> val = temp;                             // fill this unit's value with this extracted value            
+        if (solve_puzzle(puzzle)) {                     // recursively call this function
+            return true;                                // if every unit gets filled, then we solved the puzzle
         }
         possibles_remove(unit, temp);
     }
     unit -> val = 0;
-    return false;
+    return false;                                       // if not every unit gets filled, we did not solve
 }
 
 /*******backtrace********/
@@ -103,29 +93,32 @@ bool solve_puzzle(puzzle_t* puzzle)
  * Inputs: puzzle, unit
  * Output: previous unit (if any)
 */
-unit_t* backtrace(puzzle_t* puzzle, unit_t* unit)
-{
-    counters_t* possibles = unit -> possibles;
-    counters_delete(possibles);
-    unit -> val = 0;
-    unit_t* new_unit = NULL;
-    
+unit_t* backtrace(puzzle_t* puzzle, unit_t* unit){
+    if ( puzzle == NULL || unit == NULL ){
+        fprintf(stderr, "Invalid parameters for backtrace\n");
+        return NULL;
+    }
+    counters_t* possibles = unit -> possibles;             // get the given unit's possibles list
+    counters_delete(possibles);                            // delete the possibles list
+    unit -> val = 0;                                       // reset the value to zero (essentially deleting the entry)
+                                 
     int row = unit -> row_num;
     int col = unit -> col_num;
     int val = unit -> val;
 
     // NOTE: Should have some way for puzzle to designate non-changeable units
-    if (col == 0) {
-        col = 8;
+    if (col == 0) {                                         // if we reach the beginning of the row
+        col = 8;                                            // go to the end of the previous row
         row--;
     }
     else {
-        col--;
-    }
-    if (row >= 0 && col >= 0) {
-        new_unit = puzzle_get_unit(puzzle, row, col);
-        printf("Clearing unit num: %d\n", new_unit->unit_num);
-        possibles_remove(new_unit, val);
+        col--;                                              // otherwise... move back one column
+    }       
+
+    unit_t* new_unit = NULL;   
+    if (row >= 0 && col >= 0) {                              // as long as we're within our puzzle
+        new_unit = puzzle_get_unit(puzzle, row, col);        // get the next unit (the one where the insertion failed)
+        possibles_remove(new_unit, val);                     // remove the current value from that unit's possibles list
         return new_unit;
     }
     return NULL;
