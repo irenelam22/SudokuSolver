@@ -168,7 +168,6 @@ void puzzle_delete(puzzle_t *puzzle)
 */
 void first_valid_unit(void* ptr, unit_t* current_cell) 
 {
-    // EMPTY_CELL = 0;
     unit_t* unit = ptr;
     if (unit->possibles != NULL) {
         return;
@@ -195,13 +194,10 @@ unit_t* next_unit(puzzle_t* puzzle)
     cell->possibles = NULL;
     puzzle_iterate(puzzle, cell, first_valid_unit);
     if (cell->possibles == NULL) {
-        // printf("cell is empty\n");
         // If the cell is empty, delete the allocated memory from above 
         delete_unit(cell); 
         return NULL;
     }
-    
-    // printf("next_unit(%d, %d) -- ", cell -> row_num, cell -> col_num);
     return cell;
 }
 
