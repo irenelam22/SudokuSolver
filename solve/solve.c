@@ -20,11 +20,14 @@ Dartmouth CS50, Summer 2020
 bool solve_puzzle(puzzle_t* puzzle);
 unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
 
-/*******solve********/
-/*
-* Please refer to solve.h for an overview of our main solve function
-*/
-void solve(char* file_name) {
+/******* solve ********/
+/* Main driver method for solve
+ * Input:
+ * file_name: the pathname of a puzzle-formatted file
+ * Output: none (directly prints the puzzle to stdout)
+ */
+void solve(char* file_name) 
+{
     if ( file_name == NULL ){                                       // check arguments
         fprintf(stderr, "Please provide a puzzle file to solve\n");
         return;
@@ -51,12 +54,13 @@ void solve(char* file_name) {
     return;
 }
 
-/*******solve_puzzle********/
+/******* solve_puzzle ********/
 /* Fills in the entire puzzle (main solving method)
  * Inputs: puzzle
  * Output: true if solved, false otherwise
  */
-bool solve_puzzle(puzzle_t* puzzle){
+bool solve_puzzle(puzzle_t* puzzle)
+{
     if ( puzzle == NULL ){
         fprintf(stderr, "Invalid parameters for solve_puzzle\n");
         return false;
@@ -77,7 +81,7 @@ bool solve_puzzle(puzzle_t* puzzle){
         return false;                                   // note that this puzzle is not solved
     }
 
-    while ((temp = possibles_get_one(unit)) != -1){     // while we can randomly extract from our possibles list
+    while ((temp = possibles_get_one(unit)) != -1){     // while we can extract from our possibles list
         unit -> val = temp;                             // fill this unit's value with this extracted value            
         if (solve_puzzle(puzzle)) {                     // recursively call this function
             return true;                                // if every unit gets filled, then we solved the puzzle
@@ -93,7 +97,8 @@ bool solve_puzzle(puzzle_t* puzzle){
  * Inputs: puzzle, unit
  * Output: previous unit (if any)
 */
-unit_t* backtrace(puzzle_t* puzzle, unit_t* unit){
+unit_t* backtrace(puzzle_t* puzzle, unit_t* unit)
+{
     if ( puzzle == NULL || unit == NULL ){
         fprintf(stderr, "Invalid parameters for backtrace\n");
         return NULL;
@@ -106,7 +111,6 @@ unit_t* backtrace(puzzle_t* puzzle, unit_t* unit){
     int col = unit -> col_num;
     int val = unit -> val;
 
-    // NOTE: Should have some way for puzzle to designate non-changeable units
     if (col == 0) {                                         // if we reach the beginning of the row
         col = 8;                                            // go to the end of the previous row
         row--;

@@ -8,12 +8,6 @@ The specific data structures are defined in the sections below.
 
 `Sudoku` supports two features: generating a new 9x9 puzzle, or solving a given 9x9 puzzle. For the latter, the program takes in a puzzle-formatted file and prints to stdout the solution, if any.
 
-Rules of sudoku: 
-(1) each row will contain the values 1-9 (no duplicates), 
-(2) each column will contain the values 1-9 (no duplicates), and  
-(3) each box (3x3 grid) will contain the values 1-9 (no duplicates). 
-
-
 ### create
 
 ### solve
@@ -24,181 +18,107 @@ Rules of sudoku:
 
 The `solve` module implements the following methods:
 (Please see pseudocode for pseudocode implementation.)
+(Please note that as implemented, these methods may not be organized into
+the same directory)
 ```c
+/******* solve ********/
+/* Main driver method for solve
+ * Input:
+ * file_name: the pathname of a puzzle-formatted file
+ * Output: none (directly prints the puzzle to stdout)
+ */
+void solve(char* file_name);
+
 /*******solve_puzzle********/
 /* Fills in the entire puzzle (main solving method)
  * Inputs: puzzle
  * Output: true if solved, false otherwise
  */
-bool solve_puzzle(puzzle_t* puzzle)
+bool solve_puzzle(puzzle_t* puzzle);
+
+/*******first_valid_unit********/
+/* Finds the first unit within a puzzle not yet filled in
+ * itemfunc method to be called in puzzle_iterate
+ * Inputs: pointer, current cell
+ * Output: none (directly populates ptr)
+*/
+void first_valid_unit(void* ptr, unit_t* current_cell);
+
+/*******next_unit********/
+/* Finds the first unit within a puzzle not yet filled in
+ * Inputs: puzzle
+ * Output: unit
+*/
+unit_t* next_unit(puzzle_t* puzzle);
+
+/******* possibles_create ********/
+/* Creates a possibles set, based on values in the row/col/box
+ * Inputs: puzzle, unit
+ * Output: newly created set
+*/
+counters_t* possibles_create(puzzle_t* puzzle, unit_t* unit);
+
+/******* updating_possibles ********/
+/* Updates the list of possible numbers by traversing through puzzle
+ * and removing values that appear in the row, column, and box
+ * Inputs: puzzle, unit
+ * Output: none
+*/
+void updating_possibles(puzzle_t* puzzle, unit_t* unit);
+
+/******* updating_possibles_helper ********/
+/* Updates the list of possible numbers by traversing through puzzle
+ * and removing values that appear in the row, column, and box
+ * itemfunc method for updating_possibles
+ * Inputs: arg (unit -- to be modified), unit (that is compared)
+ * Output: none
+*/
+void updating_possibles_helper(void *arg, unit_t* unit);
+
+/******* solveable_helper ********/
+/* Checks whether a puzzle is solveable (e.g. all units have a possible value)
+ * itemfunc for is_puzzle_solveable
+ * Inputs: pointer (boolean), unit
+ * Output: none
+*/
+void solveable_helper(void* ptr, unit_t* current_cell);
+
+/******* is_puzzle_solveable ********/
+/* Checks whether a puzzle is solveable (e.g. all units have a possible value)
+ * Inputs: puzzle
+ * Output: true if solveable, false otherwise
+*/
+bool is_puzzle_solveable(puzzle_t* puzzle);
 ```
 
-The `querier` module implements the following methods:
-(Please see pseudocode for pseudocode implementation.)
+### Pseudo code for solve
 
-```c
-/************** main ***************
- * Main method runs the program
- * Inputs:
- * pageDirectory: the pathname of a directory produced by the Crawler, and
- * indexFilename: the pathname of a file produced by the Indexer.
- * Output: 0 if successful, 1 otherwise
- * 
- * Usage: ./querier pageDirectory indexFilename
- */ 
-int main(int argc, char* argv[]);
-
-/************** inputCheck ***************
- * Checks and validates the parameters
- * Inputs:
- * dircopy: a directory produced by the Crawler, and
- * index: the pathname of a file produced by the Indexer.
- * Output: true if successful, false otherwise 
- */ 
-bool inputCheck(char* dircopy, char* index);
-
-/************** extract_words ***************
- * Extracts words from a line and normalizes it
- * Determines words based on space delimiter
- * Returns the length of the line (number of words extracted)
- * Inputs: line, array of words
- * Output: integer representing the number of words in the line 
- */
-int extract_words(char* line, char** words );
-
-/************** valid_query ***************
- * Validate words in query. Must satisfy the below conditions
- *     - No conjunctions in the beginning or end
- *     - No consecutive conjunctions
- *     - One or more words
- *     - No non-letter characters (e.g. -,!,.,=)
- * Inputs:
- * query: array of words
- * length: number of words in query
- * Output: true if words satisfy the above conditions, false otherwise 
- */
-bool valid_query(char** query, int length);
-
-/************** process_query ***************
- * Processes the query by reading each line from stdin
- * Inputs:
- * index: loaded index data structure
- * pagedir: crawler-generated directory
- * Output: none 
- */
-void process_query(index_t* index, char* pagedir);
-
-/************** sum_iterate ***************
- * Used for OR conjunctions
- * Adds the count based on a given key (docID)
- * Note: this code was provided by Professor Zhou, I claim no ownership
- * for the following method
- * Inputs:
- * arg: counters set to be changed
- * key: docID
- * count: count of word for the given docID
- * Output: none (directly modifies the input counters set) 
- */
-void sum_iterate(void *arg, const int key, const int count);
-
-/************** min_iterate ***************
- * Used for AND conjunctions
- * Finds the minimum of two integers
- * Note: this code was provided by Professor Zhou, I claim no ownership
- * for the following method
- * Inputs: two integers (a and b)
- * Output: the smaller of the two input integers
- */
-int min(const int a, const int b);
-
-/************** min_iterate ***************
- * Used for AND conjunctions
- * Minimizes the count based on a given key (docID)
- * Note: this code was provided by Professor Zhou, I claim no ownership
- * for the following method
- * Inputs:
- * arg: counters set to be changed
- * key: docID
- * count: count of word for the given docID
- * Output: none (directly modifies the input counters set) 
- */
-void min_iterate(void *arg, const int key, const int count);
-
-/************** run_query ***************
- * Runs the query and considers AND and OR precedence
- * Note: I understand this method is a bit long, but everything in the method
- * is highly connected, hence why I chose to keep AND and OR in one method
- * Inputs:
- * words: array of words from stdin
- * index: index file
- * pagedir: crawler directory
- * Output: none (directly prints changes to stdout/stderr) 
- */
-void run_query(char** words, index_t* index, char* url) ;
-
-/************** selection_sort_helper ***************
- * Helper method for selection sort, used for printing the counts
- * in sorted order (descending)
- * Finds the running maximum count (not part of visited)
- * and updates its respective key
- * Inputs:
- * arg: row of the counters set we are iterating through
- * key: docID
- * count: count of word for the given docID
- * Output: none (directly modifies the input counters set) 
- */
-void selection_sort(counters_t* set, char* url);
-
-/************** findLength ***************
- * Finds the number of non-zero counts in a given counters set
- * Inputs:
- * arg: integer reference
- * key: docID
- * count: count for the given docID
- * Output: none (directly modifies the reference) 
- */
-void findLength(void *arg, const int key, const int count);
-
-/************** selection_sort ***************
- * Prints the counters set in descending order based on counts
- * Inputs:
- * set: counters set to be printed in descending order
- * pagedir: crawler directory
- * Output: none (directly prints the input counters set) 
- */
-void selection_sort_helper(void *arg, const int key, const int count);
-```
-
-### Pseudo code for querier
-
-(Note: This was based on the pseudocode by Professor Zhou given within the assignment.)
-
-The `querier.c` implementation runs as follows (using C):
-1. Execute from a command line with usage syntax `./querier pageDirectory indexFilename`
+The `solve.c` implementation runs as follows (using C):
+1. Execute from a command line with usage syntax `./sudoku solve PUZZLE_FILE_NAME`
 2. Validate its command-line arguments:
-    1. Ensure `pageDirectory` is the pathname for an existing Crawler-generated directory by checking for the existence of .crawler
-    2. Ensure `indexFilename` is the pathname of a readable, existing file
-2. Load the index from `indexFilename` into an internal data structure.
-3. Read search queries from stdin, one per line, until EOF.
-	1. clean each query by changing the query to its lower case variation
-    2. if the query syntax is somehow invalid, print an error message, do not perform the query, and prompt for the next query.
-	3. print the 'clean' query for user to see.
-	4. use the index to identify the set of documents that satisfy the query
-        1. Check the next word in the query (if any)
-            1. If the word is an OR, combine the current query into the final counters set
-            2. Otherwise, add the current query to the temporary counters set of AND sequences
-        2. If there are no more words and the temporary counters set is not empty, merge the temporary counters set into the final set by summing over the values
-	5. if the query is empty (no words), print nothing.
-	6. if no documents satisfy the query, print `No documents match.`
-4. Rank the resulting set of documents according to its score, and print the set of documents in decreasing rank order; for each, list the score, document ID and URL.
-    1. Obtain the URL by reading the first line of the relevant document file from the `pageDirectory`.
-5. Exit with zero status when EOF is reached on stdin.
+   1. Ensure `PUZZLE_FILE_NAME` is the pathname for an existing readable file, formatted as a puzzle
+3. Load the index from `PUZZLE_FILE_NAME` into an internal puzzle data structure.
+4. Solve the puzzle recursively.
+   1. Retrieve the next fillable unit within the puzzle
+   2. Until the next unit is not NULL, continue (as NULL indicates that the puzzle is solved)
+   3. Create a possibles list for this unit
+   4. If there are no possible numbers to input in this unit (i.e. possibls is empty)
+       1. Delete the possibles list
+       2. Set the value of the unit to the empty-cell value
+       3. Return false as there is no solution using the current puzzle values
+   5. For each possible number, p, in the unit
+       1. Set the unit value to be p
+       2. Solve the puzzle with the newly changed puzzle and return true if solveable
+       3. Otherwise, remove the value from the list of possibles as it did not result in a solveable solution
+5. Clean up and return false as there is no solution to the puzzle
 
 
-### Testing plan for querier
+### Testing plan
 
-To test the output of `querier.c`, we run several hard-coded examples as welll as `fuzzquery` inputs and manually check the outputs.
+To test the output of `create.c` and `solve.c`, we run several hard-coded examples as welll as `fuzzquery` inputs and manually check the outputs. Both modules have their respective unit tests, as well as an integration test to test the program's functionality as a whole.
 
-In particular, we check several cases that test conjunction precedence (that AND is considered before OR), that each respective conjunction properly sums (in the case of OR) or minimizes (in the case of AND) over the counts, as well as other edge cases. We should note that because the pathname to the index file and crawler director are passed and not generated, it is less important to test on different index/crawler directories, and more input to test different permutations of words present or absent in these files. Of course, the larger the file, the more intersections/unions the words will presumably have, which allow tests to be more accurate.
+In particular, we check that `create` will create as close to a unique puzzle as possible (please see README and extended pseudo-proof for why we cannot guarantee uniqueness). 
+
+Similarly, we check that `solve` will correctly solve a puzzle with a known solution. We also use various `fuzzquery` tests with known sudoku puzzle solutions and invalid inputs to ensure robustness. For example, we test `solve` on puzzles with different amounts of units filled in to test the accuracy of backtracing/the recursive process. 
 
 Please see `DESIGN.md` for more testing specific examples.
