@@ -243,7 +243,7 @@ void updating_possibles(puzzle_t* puzzle, unit_t* unit)
 void updating_possibles_helper(void *arg, unit_t* unit) 
 {
     if (arg == NULL || unit == NULL) {
-        fprintf(stderr, "processing_helper received NULL input(s)");
+        fprintf(stderr, "processing_helper received NULL input(s)\n");
         return;
     }
     unit_t* curr_unit = arg;
