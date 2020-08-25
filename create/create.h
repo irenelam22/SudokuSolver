@@ -1,3 +1,15 @@
+/*
+
+create.h -- header file for creating the sudoku puzzle
+
+The create program will be called by our sudoku program 
+to create a new sudoku puzzle. The user will have the option either to provide
+a file to which the output will be sent, or to provide no file name (the output 
+will be sent to stdout)
+
+Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
+Dartmouth CS50, Summer 2020
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include "unit.h"
