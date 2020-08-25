@@ -37,27 +37,3 @@ int get_unit_val(unit_t *unit);
 int possibles_get_one(unit_t* unit);
 
 #endif // __UNIT_H
-
-
-
-
-// define unit struct
-    // unit
-        // value
-            // int
-        // row_num
-            // int
-        // col_num
-            // int
-        // box_num
-            // int
-        // list of possibles
-            // set, hashtable, bag, counters, array, custom linked list
-
-// functions
-    // unit new 
-    // print unit
-    // getter methods
-    // setter methods
-    // delete unit
-    // update possible

@@ -19,8 +19,7 @@ group: project-kidd
 
 const int MAX_ROW = 9; 
 const int MAX_COL = 9; 
-// sizeof(unit_t) wasn't working, so I hard-coded it as a global variable
-const int UNIT_SIZE = 32; 
+const int UNIT_SIZE = 32;  // Note: sizeof(unit_t) wasn't working, so I hard-coded it as a global variable
 const int EMPTY_CELL = 0;
 
 /*******puzzle_new********/
