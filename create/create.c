@@ -25,7 +25,8 @@ static void copy_puzzle(void *arg, unit_t* unit);
 /*
 Please refer to create.h for an overview of our create function
 */
-void create(char* file_name, int indicator){
+void create(char* file_name, int indicator)
+{
     if ( indicator < 0 || indicator > 1){           // check arguments; note: file_name may be NULL if we're printing to stdout
         fprintf(stderr, "Error with indicator\n");
         return;
@@ -78,7 +79,8 @@ void create(char* file_name, int indicator){
 * 
 *  code inspired by cs.yale.edu
 */
-unsigned int gen_random_num(int min, int max){
+unsigned int gen_random_num(int min, int max)
+{
     FILE *fp = fopen("/dev/urandom", "r"); 
     unsigned int randval; 
     fread(&randval, sizeof(randval), 1, fp); 
@@ -90,7 +92,8 @@ unsigned int gen_random_num(int min, int max){
 /*********get_random_possible**********/
 /* get random number from the unit's possibles 
 */
-int get_random_possible(unit_t *unit){
+int get_random_possible(unit_t *unit)
+{
     if ( unit == NULL ){
         fprintf(stderr, "Invalid unit passed in to get_random_possible\n");
         return -1;
@@ -111,7 +114,8 @@ int get_random_possible(unit_t *unit){
 /*******fill_puzzle************/
 /* Randomly fills in a puzzle, making sure sudoku rules are held
 */
-static bool fill_puzzle(puzzle_t *puzzle){
+static bool fill_puzzle(puzzle_t *puzzle)
+{
     if ( puzzle == NULL ){  // check arguments
         fprintf(stderr, "Invalid puzzle passed in to fill_puzzle\n");
         return false;
@@ -148,7 +152,8 @@ static bool fill_puzzle(puzzle_t *puzzle){
 /* copies all current (key, count) values into the given
 *  ctrs argument
 */
-static void copy_counters(void *arg, const int key, int count) {
+static void copy_counters(void *arg, const int key, int count) 
+{
     if ( arg == NULL || count < 0 ){
         fprintf(stderr, "Invalid arguments for copy_counters\n");
         return;
@@ -160,7 +165,8 @@ static void copy_counters(void *arg, const int key, int count) {
 /*********copy_puzzle***********/
 /* copy values and possibles of current puzzle into provided puzzle_t argument
 */
-void copy_puzzle(void *arg, unit_t* unit) {
+void copy_puzzle(void *arg, unit_t* unit) 
+{
     if ( arg == NULL || unit == NULL ){
         fprintf(stderr, "Invalid parameters for copy_puzzle\n");
         return;
@@ -177,7 +183,8 @@ void copy_puzzle(void *arg, unit_t* unit) {
 *  to fill in the hidden values in the current puzzle, then 
 *  comparing that to the full puzzle
 */
-static bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz){
+static bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz)
+{
     if ( puzzle == NULL || fullpuzz == NULL ){
         fprintf(stderr, "Invalid parameters for has_one_solution\n");
         return false;

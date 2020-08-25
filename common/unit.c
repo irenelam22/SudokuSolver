@@ -298,12 +298,8 @@ bool possibles_contain(unit_t* unit, int val)
     if ( unit == NULL || val < 1 || val > 9){               // check arguments
         return false;
     }    
-
-    if ( counters_get(unit->possibles, val) != 0){          // remember, possibles value of 1 means that value is possible
-        return true;
-    } else{
-        return false;
-    }
+    
+    return counters_get(unit->possibles, val) != 0;
 }
 
 /******* possibles_isEmpty_helper ********/

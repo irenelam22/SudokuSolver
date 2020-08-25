@@ -148,7 +148,6 @@ int solveable_test()
 
 int main(const int argc, const char *argv[])
 {
-    // Testing next unit
     next_unit_test(); 
     completed_next_unit();
     possibles_update_test();
