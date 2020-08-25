@@ -9,13 +9,34 @@ Rules of sudoku:
 (2) each column will contain the values 1-9 (no duplicates), and  
 (3) each box (3x3 grid) will contain the values 1-9 (no duplicates). 
 
+Additionally, our sudoku is formatted like so: 
+```
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+---------------------
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+---------------------
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+```
+
 ### create
+`create` randomly generates an unsolved puzzle with at least 40 missing numbers. To do so, it first creates an empty puzzle, then recursively fills all units in the puzzle, making sure the rules of sudoku are held. Then, it begins randomly removing numbers from the puzzle, until there is our best approximation of one unique solution. Once it's done removing numbers, create prints the unfinished puzzle to either standard output, if no parameter is given, or to a new file specified by the given file name. 
 
 ### solve
 
 `solve` takes in a (presumably) unsolved puzzle and recursively populates each unit in the puzzle. In particular, each unit maintains a set of possible values (of which discludes values from the unit's row, column, and block). While this set is populated, the program attempts to insert one of these values into the puzzle, and backtraces to a previous unit if no such possible values exist. Solve continues this process until the entire puzzle is populated.
 
 ### Jargon used 
+Here are the common terms we use to discuss our sudoku, in both our documentation and our code: 
+* `puzzle`: the entire sudoku puzzle itself
+* `box`: one of the 9 3x3 grids in the puzzle
+* `unit`: an individual cell within a sudoku puzzle (for instance, there are 81 units in a puzzle)
+
 
 ### Usage
 
@@ -73,11 +94,13 @@ static void copy_puzzle(void *arg, unit_t* unit);
 ```
 
 Please run the following to execute `sudoku`:
-`./sudoku create` to create a 9x9 puzzle
+`./sudoku create [FILE_NAME]` to create a 9x9 puzzle
+* where `FILE_NAME` is an optional parameter specifying the pathname of the file to print the unfinished puzzle to
+* if no `FILE_NAME` is given, create prints to standard output
 
-`./sudoku solve FILE_NAME` to solve a 9x9 puzzle
-* where `FILE_NAME` is the pathname of a puzzle-formatted file, presumably 
-  created by sudoku create
+`./sudoku solve [FILE_NAME]` to solve a 9x9 puzzle
+* where `FILE_NAME` is an optional parameter specifying pathname of a puzzle-formatted file, presumably created by sudoku create
+* If no `FILE_NAME` is given, solve reads from standard input 
 
 ### Implementation
 
@@ -98,6 +121,11 @@ Additionally, we assumed that it is largely not possible to determine a unique s
 * `create/create.h` - the header file for create 
 * `IMPLEMENTATION.md` - implementation details 
 * `DESIGN.md` - design specs 
+
+### Libraries
+In addition to the listed files above, our code relies on two libraries: 
+* `common` - contains unit and puzzle modules
+* `libcs50` - CS50 provided code
 
 ### Compilation
 
