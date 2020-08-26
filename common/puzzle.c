@@ -11,6 +11,7 @@ Dartmouth CS50, Summer 2020
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <ctype.h>
 #include "puzzle.h"
 #include "./unit.h"
 #include "../libcs50/file.h"
