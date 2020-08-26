@@ -13,7 +13,7 @@
 void pprint(puzzle_t *puzzle, unit_t* current_unit)
 {
     
-    // TODO: print possibles, insert number, delete, help, get next unit (n), try mouse
+    // TODO: insert number, delete, help, get next unit (n), try mouse
     int MAX_COL = 23;
     for (int i = 0; i < MAX_ROW; i++) {
         if (i == 3 || i == 6) {
@@ -51,6 +51,21 @@ void pprint(puzzle_t *puzzle, unit_t* current_unit)
         }
         
     }
+
+    mvaddstr(0, 30, "Help Manual:");
+    mvaddstr(1, 30, "-----------");
+    mvaddstr(2, 30, "Units displayed in white are part of the original puzzle");
+    mvaddstr(3, 30, "Units displayed in yellow can be edited");
+    mvaddstr(4, 30, "Numbers surrounded by paranthesis represent the current cell you're on");
+    mvaddstr(5, 30, "See the list of possible numbers on the bottom");
+    mvaddstr(7, 30, "Instructions:");
+    mvaddstr(8, 30, "-----------");
+    mvaddstr(9, 30, "Press arrow keys to move left/right/up/down");
+    mvaddstr(10, 30, "Press integers 1 through 9 to insert");
+    mvaddstr(11, 30, "Press 0 or d to delete the value in the current unit");
+    mvaddstr(12, 30, "Press f to jump to the first unfilled unit");
+    mvaddstr(13, 30, "Press q to quit");
+    
 }
 
 int main(void)
@@ -74,9 +89,6 @@ int main(void)
 
     // keypad Support 
     keypad(stdscr, TRUE);
-    pprint(puzzle, NULL);
-    refresh();
-
     unit_t* ptr = next_unit(puzzle);
     int count = 0;
     while (true) {
@@ -100,6 +112,28 @@ int main(void)
                 break;
             case KEY_DOWN:
                 ptr = puzzle_get_unit(puzzle, (row + 1) % 9, col);
+                break;
+            case 'f':
+                ptr = next_unit(puzzle);
+                break;
+            case '0':
+            case 'd':
+                if (!(ptr -> is_original)) {
+                    ptr -> val = 0;
+                }
+                break;
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                if (!(ptr -> is_original)) {
+                    ptr -> val = ch - '0';
+                }
                 break;
             default:
                 break;
