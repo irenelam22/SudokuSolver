@@ -6,14 +6,14 @@
 int main()
 {
     puzzle_t *puzzle = puzzle_new();
-    puzzle_print(puzzle);
+    puzzle_print(stdout, puzzle);
     puzzle_delete(puzzle);
 
     printf("\n");
 
     FILE *fp = fopen("sudokuexample", "r"); 
     puzzle = puzzle_load(fp); 
-    puzzle_print(puzzle); 
+    puzzle_print(stdout, puzzle); 
     puzzle_delete(puzzle); 
     fclose(fp); 
 

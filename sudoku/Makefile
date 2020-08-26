@@ -1,4 +1,4 @@
-# Makefile for 'solve' module
+# Makefile for 'sudoku' module
 #
 # Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
 # CS50, Summer 2020
@@ -18,19 +18,11 @@ MAKE = make
 
 all: $(PROG)
 
-# $(LIB): $(OBJS)
-# 	ar cr $(LIB) $(OBJS)
-
-# solve: solve.o
-
 $(PROG): $(OBJS) $(LIBS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 ../create/create.o: ../create/create.h
 ../solve/solve.o: ../solve/solve.h
-
-# solve_test: solve_test.o $(LIBS)
-# 	$(CC) $(CFLAGS) $^ -o $@
 
 # test:
 # 	$(CC) -c $(CFLAGS) $<
