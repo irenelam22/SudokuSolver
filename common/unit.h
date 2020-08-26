@@ -171,4 +171,6 @@ int get_unit_val(unit_t *unit);
  */
 int possibles_get_one(unit_t* unit);
 
+char* possibles_print_ncurses(unit_t* unit);
+
 #endif // __UNIT_H

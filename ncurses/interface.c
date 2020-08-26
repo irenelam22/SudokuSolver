@@ -5,16 +5,15 @@
 #include "../common/puzzle.c"
 #include "../common/unit.c"
 
-#define ORIGINAL_PAIR 0
-#define NEW_PAIR 1
-
-#define PARENTHESES_PAIR 3
+#define ORIGINAL_PAIR 0             // Original numbers in puzzle
+#define NEW_PAIR 1                  // Numbers to be modified (originally 0)
+#define PARENTHESES_PAIR 3          // Paranthesis designating where the user is
 
 // Pretty print method
 void pprint(puzzle_t *puzzle, unit_t* current_unit)
 {
     
-    
+    // TODO: print possibles, insert number, delete, help, get next unit (n), try mouse
     int MAX_COL = 23;
     for (int i = 0; i < MAX_ROW; i++) {
         if (i == 3 || i == 6) {
@@ -34,16 +33,23 @@ void pprint(puzzle_t *puzzle, unit_t* current_unit)
         }
     }    
 
+    // Placing paranthesis
     if (current_unit != NULL) {
         attron(COLOR_PAIR(PARENTHESES_PAIR));
         int curr_row = current_unit -> row_num;
         int curr_col = current_unit -> col_num;
         mvaddch(curr_row + curr_row/3, 2* (curr_col + curr_col/3), '(');
         mvaddch(curr_row + curr_row/3, 2* (curr_col + curr_col/3 + 1), ')');
-
-        // move(curr_row + curr_row/3, 2* (curr_col + curr_col * 1/3) + 1);
-        move(12, 1);
         attroff(COLOR_PAIR(PARENTHESES_PAIR)); 
+
+        // To offplace cursor
+        move(12, 1);
+
+        possibles_create(puzzle, current_unit);
+        if (!(current_unit -> is_original)) {
+            printw("%s", possibles_print_ncurses(current_unit));
+        }
+        
     }
 }
 
@@ -60,6 +66,7 @@ int main(void)
     noecho();
     clear();
 
+    // Coloring puzzle
     start_color();
     init_pair(ORIGINAL_PAIR, COLOR_WHITE, COLOR_BLACK);
     init_pair(NEW_PAIR, COLOR_YELLOW, COLOR_BLACK);
@@ -79,8 +86,8 @@ int main(void)
         int ch = getch();
         int row = ptr -> row_num;
         int col = ptr -> col_num;
-        // replace with switch case
-        // Currently exits
+
+        // User mouse movement
         switch(ch) {
             case KEY_LEFT:
                 ptr = puzzle_get_unit(puzzle, row, (col + 8) % 9);
@@ -97,6 +104,8 @@ int main(void)
             default:
                 break;
         }
+
+        // Quit
         if(ch == 'q') {
             mvaddstr(12, 1, "q=quit");
             break;

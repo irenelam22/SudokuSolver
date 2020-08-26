@@ -9,6 +9,7 @@ Dartmouth CS50, Summer 2020
 
 #include "puzzle.h"
 #include "unit.h"
+#include "../libcs50/memory.h"
 
 int next_unit_test() 
 {
@@ -146,11 +147,34 @@ int solveable_test()
     return 0;
 }
 
+int possibles_print()
+{
+    FILE* file6 = fopen("../puzzlefiles/medium.txt", "r");
+    puzzle_t* puzzle = puzzle_load(file6); 
+    fclose(file6);
+
+    unit_t* nextUnit = next_unit(puzzle);
+    if (nextUnit == NULL) {
+        fprintf(stderr, "Invalid next unit in possibles_print\n");
+        return 1;
+    }
+
+    unit_t *unit = puzzle[nextUnit -> row_num][nextUnit -> col_num];
+    nextUnit -> possibles = NULL;
+    counters_delete(unit -> possibles);
+    delete_unit(nextUnit); 
+
+    possibles_create(puzzle, unit);
+    printf("%s", possibles_print_ncurses(unit));
+    return 0;
+}
+
 int main(const int argc, const char *argv[])
 {
     next_unit_test(); 
     completed_next_unit();
     possibles_update_test();
     solveable_test();
+    possibles_print();
     return 0;
 }
