@@ -1,11 +1,9 @@
 /* 
 puzzle.c – implementation for puzzle class
-
 The puzzle initializes a puzzle struct, essentially a 2D array of units
 in a 9x9 grid. The following implementations instantiate/maintain/delete this
 puzzle. These methods include a creation, iteration, pretty printing, finding
 the next available unit, updating the possibles list, and deleting the puzzle.
-
 Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
 Dartmouth CS50, Summer 2020
 */
@@ -89,30 +87,54 @@ void puzzle_print(FILE *fp, puzzle_t *puzzle)
 puzzle_t *puzzle_load(FILE *fp)
 {
     // Initialize new puzzle 
-    puzzle_t *puzzle = malloc(MAX_COL*MAX_ROW*UNIT_SIZE); 
+    puzzle_t *puzzle = assertp(malloc(MAX_COL*MAX_ROW*UNIT_SIZE), "puzzle load malloc failed"); 
     int row = 0;
     int col = 0; 
     int unit_num = 1; 
     int val; 
-    // Go through entire puzzle 
-    while (unit_num <= MAX_COL*MAX_ROW) {
-        // Load in the numbers from the file 
-        while (fscanf(fp, "%d", &val) == 1) {
-            // When we finish a row, increment row count, reset column count, 
-            // and allocate memory for the new row 
-            if (unit_num % MAX_COL == 1) {
-                if (unit_num > 1) {row++;}
-                col = 0; 
-                puzzle[row] = malloc(MAX_COL*UNIT_SIZE); 
-            }
-            // Initialize new unit at the proper unit_num, row, and col
-            puzzle[row][col] = unit_new(unit_num, val); 
-            unit_num++; 
-            col++; 
+    char *line;
+
+    // Go through entire file, line by line 
+    while ((line = freadlinep(fp)) != NULL) {
+        // Skip empty lines, or lines that start with "-"
+        if (strlen(line)==0 || line[0] == 45) {
+            free(line); 
+            continue;
         }
-        // Skip "|" in file 
-        fscanf(fp, "|"); 
+        // Otherwise, allocate memory for the row and process the line
+        puzzle[row] = assertp(malloc(MAX_COL*UNIT_SIZE), "puzzle load malloc failed");
+        for (int i = 0; i < strlen(line); i++) {
+            // If character is a digit
+            if (isdigit(line[i])) {
+                // If the next character is also a digit, then the format is invalid
+                if (i+1<strlen(line) && isdigit(line[i+1])) {
+                    fprintf(stderr, "Invalid puzzle format\n"); 
+                    return NULL; 
+                }
+                // Subtract out 48 to get actual digit value
+                val = line[i] - 48;
+                // Insert into puzzle, and increment unit_num and column
+                puzzle[row][col] = unit_new(unit_num, val); 
+                unit_num++; 
+                col++; 
+            }
+            // If character is not a space, or "|", then the format is invalid
+            else if (line[i] != 32 && line[i] != 124) {
+                fprintf(stderr, "Invalid puzzle format\n"); 
+                return NULL; 
+            }
+        }
+        // Free memory, and move to the next row
+        free(line);
+        row++; 
+        col = 0; 
     }
+    // If we didn't receive enough units for the puzzle, then the format is invalid
+    if (unit_num-1 < MAX_ROW*MAX_COL) {
+        fprintf(stderr, "Invalid puzzle format\n"); 
+        return NULL;
+    }
+    // Otherwise, puzzle has a valid format
     return puzzle; 
 }
 
