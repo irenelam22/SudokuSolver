@@ -14,7 +14,7 @@
  *   Output: 
  *    printed puzzle, to either stdout or given filename
  */
-void create(char* file_name, int indicator);
+void create(FILE *fp);
 
 /******* fill_puzzle *******/
 /* Randomly fills in the entire puzzle, making sure sudoku rules are held 

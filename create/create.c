@@ -25,38 +25,13 @@ static void copy_puzzle(void *arg, unit_t* unit);
 
 /******* create *******/
 /* Main creating functionality 
- * *  Inputs:
- * *	filename of where to print the puzzle 
- * *	indicator (1 if printing to stdout, 0 if printing to file)
- * *  Output: 
- * *   printed puzzle, to either stdout or given filename
- * */
-void create(char* file_name, int indicator)
+ *   Inputs:
+ * 	file pointer of where to print puzzle
+ *   Output: 
+ *    printed puzzle to file
+ */
+void create(FILE *fp)
 {
-    if ( indicator < 0 || indicator > 1){           // check arguments; note: file_name may be NULL if we're printing to stdout
-        fprintf(stderr, "Error with indicator\n");
-        return;
-    }
-    FILE* fp;
-    char* file_name_copy;               
-    if ( indicator == 1){        // if our indicator equals one, then no file was provided (print to stdout)
-        fp = stdout;
-    }
-    else{                                                   // otherwise, there should be a provided file
-        file_name_copy = malloc(strlen(file_name) + 1);     // allocate memory for a copy of the file name
-        if ( file_name_copy == NULL ){                      // make sure the memory was allocated properly
-            fprintf(stderr, "Failed to allocate memory for file.\n");
-            return;
-        }
-        strcpy(file_name_copy, file_name);                  // copy the name into the new allocated memory
-        if ( (fp = fopen(file_name_copy, "w")) == NULL) {   // try to open the file for writing; exit if error
-            fprintf(stderr, "%s is not a writeable file\n", file_name_copy); 
-            free(file_name_copy); 
-            return; 
-        }
-
-    }
-
     puzzle_t *puzzle = puzzle_new();                     // Create empty puzzle and randomly fill in all the values 
     fill_puzzle(puzzle); 
 
@@ -71,10 +46,7 @@ void create(char* file_name, int indicator)
 
     puzzle_delete(puzzle);                               // Clean everything up from memory 
     puzzle_delete(fullpuzz);  
-    if ( indicator == 0){                                // Note: if indicator is 0, we have a file to close/free
-        fclose(fp);
-        free(file_name_copy);
-    }
+    fclose(fp);
     
 
 }
@@ -121,9 +93,9 @@ int get_random_possible(unit_t *unit)
 
 /******* fill_puzzle *******/
 /* Randomly fills in the entire puzzle, making sure sudoku rules are held 
- * *  Input: puzzle struct 
- * *  Output: true if puzzle filled properly, false otherwise 
- * */
+ *  Input: puzzle struct 
+ *  Output: true if puzzle filled properly, false otherwise 
+ */
 static bool fill_puzzle(puzzle_t *puzzle)
 {
     if ( puzzle == NULL ){  // check arguments
