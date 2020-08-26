@@ -26,6 +26,7 @@ typedef struct unit{
     int row_num;
     int col_num;
     int box_num;
+    bool is_original;
     counters_t* possibles;
 } unit_t;
 

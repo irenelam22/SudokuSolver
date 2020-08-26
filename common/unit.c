@@ -38,6 +38,7 @@ unit_t* unit_new(int unit_num, int val){
     unit_t* unit = malloc(sizeof(unit_t));                // allocate memory for and instantiate our unit
     unit->val = val;
     unit->unit_num = unit_num;
+    unit -> is_original = (val != 0);
 
     int row = generate_row_num(unit_num);                // generate the unit's row number
     if ( row == -1){                                     // exit if error
