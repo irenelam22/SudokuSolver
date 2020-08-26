@@ -37,7 +37,7 @@ Dartmouth CS50, Summer 2020
  *  try to solve the puzzle and print the resulting puzzle
  *  clean up
  */
-void solve(char* file_name);
+void solve(FILE* file_name);
 
 /**************** solve_puzzle ****************/
 /* Recursive function to solve a puzzle

@@ -13,14 +13,14 @@
  *     indicator (1 if printing to stdout, 0 if printing to file)
  *   Output: 
  *    printed puzzle, to either stdout or given filename
- * /
+ */
 void create(char* file_name, int indicator);
 
 /******* fill_puzzle *******/
 /* Randomly fills in the entire puzzle, making sure sudoku rules are held 
  *   Input: puzzle struct 
  *   Output: true if puzzle filled properly, false otherwise 
- * /
+ */
 bool fill_puzzle(puzzle_t *puzzle);
 
 /******* hide_nums *******/
@@ -32,7 +32,7 @@ bool fill_puzzle(puzzle_t *puzzle);
  *      * minshown: the minimum amount of numbers to be shown
  *  Output: 
  *      * true if enough numbers are hidden (at least 40), false otherwise 
- * /
+ */
 bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
 
 /******* has_one_solution *******/
@@ -48,13 +48,13 @@ bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
  *                   fill_puzzle
  *  Output: 
  *       * true if the puzzles match, false otherwise 
- * /
+ */
 bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz);
 
 /******* copy_puzzle *******/
 /* Helper function for puzzle_iterate that copies all data values for one 
  *   puzzle into another
- * /
+ */
 void copy_puzzle(void *arg, unit_t* unit);
 
 #endif // __CREATE_H 
