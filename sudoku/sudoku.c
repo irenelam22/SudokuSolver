@@ -20,14 +20,10 @@ static void process_arguments(int argc, char* argv[], char** command, char** fil
 int main(const int argc, char *argv[]){
     char* command = NULL;                                   // should either be "create" or "solve"
     char* file_name = NULL;                                 // note: user may or may not pass a file
-    //int indicator = 0;					    // equals one if file_name is stdout
     FILE *fp = NULL; 
 
     process_arguments(argc, argv, &command, &file_name, &fp);
     if ( strcmp(command, "create") == 0){                   // if the command is create...
-        //if ( argc == 2){                                    // and the user did not provide a file name
-        //    indicator = 1;                                  // then the puzzle will be sent to stdout
-        //}
         create(fp);                       // create the puzzle
     }
     else if ( strcmp(command, "solve") == 0){               // if the command is solve...
@@ -52,7 +48,7 @@ static void process_arguments(int argc, char* argv[], char** command, char** fil
     }   
 
     if ( strcmp(*command, "create") == 0){                  // if the command is "create"...
-        if ( *file_name == NULL ){                          // and no file name is provided, then we're good to move on
+        if ( *file_name == NULL ){                          // and no file name is provided, then use standard output
             *fp = stdout; 
 		return;
         }
@@ -65,7 +61,7 @@ static void process_arguments(int argc, char* argv[], char** command, char** fil
 
     } 
     else if ( strcmp(*command, "solve") == 0){              // if the command is "solve"...
-        if ( *file_name == NULL ){                          // and no file name is provided, then we're good to move on
+        if ( *file_name == NULL ){                          // and no file name is provided, then use standard input
              *fp = stdin; 
 		return;
         }
