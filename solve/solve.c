@@ -16,9 +16,8 @@ Dartmouth CS50, Summer 2020
 #include "../libcs50/memory.h"
 #include "../libcs50/counters.h"
 
-// local function prototypes
+// Function prototype
 bool solve_puzzle(puzzle_t* puzzle);
-unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
 
 /******* solve ********/
 /* Main driver method for solve
@@ -26,14 +25,8 @@ unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
  * file_name: the pathname of a puzzle-formatted file
  * Output: none (directly prints the puzzle to stdout)
  */
-void solve(char* file_name) 
+void solve(FILE* puzzle_file) 
 {
-    if ( file_name == NULL ){                                       // check arguments
-        fprintf(stderr, "Please provide a puzzle file to solve\n");
-        return;
-    }
-
-    FILE* puzzle_file = fopen(file_name, "r");               // make sure the provided file is readable
     if ( puzzle_file == NULL ){
         fprintf(stderr, "Invalid puzzle file passed\n");
         return;
@@ -45,7 +38,7 @@ void solve(char* file_name)
         puzzle_print(stdout, puzzle);                        // if we solved it... display
     } 
     else {                                                   // otherwise, note that the puzzle solve failed
-        printf("Puzzle Solve Failed\n");
+        printf("Bad input\n");
         puzzle_print(stdout, puzzle);
     }
     

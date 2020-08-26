@@ -13,6 +13,7 @@ Dartmouth CS50, Summer 2020
 #include <stdio.h>
 #include <stdlib.h>
 #include "unit.h"
+#include "../common/puzzle.h"
 
 #ifndef __CREATE_H
 #define __CREATE_H
@@ -32,7 +33,7 @@ void create(char* file_name, int indicator);
  * *  Input: puzzle struct 
  * *  Output: true if puzzle filled properly, false otherwise 
  * */
-static bool fill_puzzle(puzzle_t *puzzle);
+bool fill_puzzle(puzzle_t *puzzle);
 
 /******* hide_nums *******/
 /* Randomly selects units to remove from the given puzzle 
@@ -44,7 +45,7 @@ static bool fill_puzzle(puzzle_t *puzzle);
  * * Output: 
  * *     * true if enough numbers are hidden (at least 40), false otherwise 
  * */
-static bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
+bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
 
 /******* has_one_solution *******/
 /* Our best estimate of testing to see if a puzzle has one unique solution
@@ -60,12 +61,12 @@ static bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
  * * Output: 
  * *      * true if the puzzles match, false otherwise 
  * */
-static bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz);
+bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz);
 
 /******* copy_puzzle *******/
 /* Helper function for puzzle_iterate that copies all data values for one 
  * *  puzzle into another
  * */
-static void copy_puzzle(void *arg, unit_t* unit);
+void copy_puzzle(void *arg, unit_t* unit);
 
 #endif // __CREATE_H 

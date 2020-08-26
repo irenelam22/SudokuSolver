@@ -11,6 +11,7 @@ all:
 	make -C common
 	make -C solve
 	make -C create
+	make -C sudoku
 
 ############## test: make all tests ##########
 test:
@@ -29,3 +30,4 @@ clean:
 	make -C common clean
 	make -C solve clean
 	make -C create clean
+	make -C sudoku clean
