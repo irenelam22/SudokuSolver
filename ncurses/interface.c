@@ -3,16 +3,16 @@
 #include <unistd.h>
 
 #include "../common/puzzle.c"
+#include "../common/unit.c"
+
 
 // Pretty print method
 void pprint(puzzle_t *puzzle, unit_t* current_unit)
 {
-    int MAX_ROW = 9;
     int MAX_COL = 23;
     for (int i = 0; i < MAX_ROW; i++) {
         if (i == 3 || i == 6) {
             mvaddstr(i + i / 3 - 1, 0, "-----------------------");
-            // fprintf(fp, "---------------------\n"); 
         }
         
         for (int j = 0; j < MAX_COL; j++) {
@@ -20,7 +20,7 @@ void pprint(puzzle_t *puzzle, unit_t* current_unit)
                 mvaddch(i + i/3, j, '|');
             }
             else if (j%2 == 1) {
-                mvaddch(i + i / 3, j, '?');
+                mvaddch(i + i / 3, j, '0' + puzzle[i][j/2 - j/8] -> val);
             }
         }
     }
@@ -28,8 +28,8 @@ void pprint(puzzle_t *puzzle, unit_t* current_unit)
     if (current_unit != NULL) {
         int curr_row = current_unit -> row_num;
         int curr_col = current_unit -> col_num;
-        mvaddstr(curr_row, curr_col-1, '(');
-        mvaddstr(curr_row, curr_col+1, ')');
+        mvaddch(curr_row + curr_row/3, 2* (curr_col -1 + curr_col* 2/7), '(');
+        mvaddch(curr_row + curr_row/3, 2* (curr_col + curr_col * 2/7), ')');
     }
 }
 
@@ -39,8 +39,8 @@ int main(void)
     FILE* puzzle_file = fopen(filename, "r");
     puzzle_t* puzzle = puzzle_load(puzzle_file);
     puzzle_print(stdout, puzzle);
-    sleep(1);
 
+    sleep(1);
     initscr();
     cbreak();
     noecho();
@@ -48,36 +48,59 @@ int main(void)
 
     // keypad Support 
     keypad(stdscr, TRUE);
-
-    // make sure terminal screen is tall/wide enough
-    int maxlines = LINES - 1;
-    int maxcols = COLS - 1;
-
     pprint(puzzle, NULL);
     refresh();
 
     unit_t* ptr = next_unit(puzzle);
     int count = 0;
     while (true) {
-        pprint(puzzle, NULL);
+        clear();
+        pprint(puzzle, ptr);
         refresh();
         int ch = getch();
+        int row = ptr -> row_num;
+        int col = ptr -> col_num;
         // replace with switch case
         // Currently exits
-        if(ch == KEY_LEFT || ch == 'q') {
-            printw("Left arrow is pressed\n");
+        switch(ch) {
+            case KEY_LEFT:
+                if (row > 1) {
+                    ptr = puzzle_get_unit(puzzle, row, (col + 8) % 9 );
+                    move(12, 1);
+                    // printw("Current unit: %d", counters_get(ptr->possibles, 0));
+                    print_unit(ptr);
+                }
+                break;
+            case KEY_RIGHT:
+                if (row < MAX_COL) {
+                    ptr = puzzle_get_unit(puzzle, row, (col + 1) % 9 );
+                }
+                break;
+            case KEY_UP:
+                if (col > 0) {
+                    ptr = puzzle_get_unit(puzzle, (row + 8) % 9, col);
+                }
+                break;
+            case KEY_DOWN:
+                if (col < MAX_ROW) {
+                    ptr = puzzle_get_unit(puzzle, (row + 1) % 9, col);
+                }
+                break;
+            default:
+                break;
+        }
+        if(ch == 'q') {
+            mvaddstr(12, 1, "q=quit");
             break;
-        } else {
-            char* num = assertp(malloc(sizeof(count)+1), "pagesaver ID");
-            sprintf(num, "%d", count);
-            ++count;
-            printw("Press Left arrow or infinite loop %s - %c\n", num, ch);
-            free(num);
+        } 
+        else {
+            move(12, 1);
+            printw("Press Left arrow or infinite loop %d - %c", ++count, ch);
         }
     }
 
     // Replace with final puzzle/message
-    mvaddstr(maxlines, 2, "Final Puzzle: (currently not implemented, press randomly to exit");
+    mvaddstr(LINES - 1, 2, "Final Puzzle: (currently not implemented, press randomly to exit");
     refresh();
     getch();
     endwin();
