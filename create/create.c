@@ -31,8 +31,9 @@ static void copy_puzzle(void *arg, unit_t* unit);
  * *  Output: 
  * *   printed puzzle, to either stdout or given filename
  * */
-void create(char* file_name, int indicator)
+void create(FILE *fp)
 {
+	/*
     if ( indicator < 0 || indicator > 1){           // check arguments; note: file_name may be NULL if we're printing to stdout
         fprintf(stderr, "Error with indicator\n");
         return;
@@ -56,6 +57,7 @@ void create(char* file_name, int indicator)
         }
 
     }
+    */
 
     puzzle_t *puzzle = puzzle_new();                     // Create empty puzzle and randomly fill in all the values 
     fill_puzzle(puzzle); 
@@ -71,10 +73,13 @@ void create(char* file_name, int indicator)
 
     puzzle_delete(puzzle);                               // Clean everything up from memory 
     puzzle_delete(fullpuzz);  
+    fclose(fp);
+    /*
     if ( indicator == 0){                                // Note: if indicator is 0, we have a file to close/free
         fclose(fp);
         free(file_name_copy);
     }
+    */
     
 
 }
