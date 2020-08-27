@@ -32,7 +32,7 @@ Additionally, our sudoku is formatted like so:
 `create` randomly generates an unsolved puzzle with at least 40 missing numbers. To do so, it first creates an empty puzzle, then recursively fills all units in the puzzle, making sure the rules of sudoku are held. Then, it begins randomly removing numbers from the puzzle, until we are in the specified range for the given difficulty level (as described above), **and** there is our best approximation (\*) of one unique solution. Once it's done removing numbers, create prints the unfinished puzzle to standard output. 
 <br/>
 \* "Best approximation" - while our puzzle cannot guarantee with 100% confidence that the created puzzle has only one unique solution, we approximate that there's one unique solution by randomly solving the puzzle and comparing it to the original solution. If the two completed puzzles match, i.e. the randomly solved puzzle is the actual solution, then we determine that that solution is likely the one unique solution to the puzzle. However, there is a small chance that another random solution could be generated. 
-* However, we have a pseudo-proof of a possible way to guarantee uniqueness using Group Theory: see the section "Pseudo proof of uniqueness" below. We did not implement this solution because we determined that the math would be too complicated.  
+* However, we have a pseudo-proof of a possible way to guarantee uniqueness using Group Theory: see the section "Pseudo proof of uniqueness" below. We did not implement this solution because we determined that the math would be too complicated (as it is a NP-hard problem).  
 
 ### solve
 
@@ -83,6 +83,9 @@ void updating_possibles(puzzle_t* puzzle, unit_t* unit);
 void updating_possibles_helper(void *arg, unit_t* unit); 
 void solveable_helper(void* ptr, unit_t* current_cell); 
 bool is_puzzle_solveable(puzzle_t* puzzle); 
+void valid_populate_helper(void *arg, unit_t* cell);
+void valid_check_helper(void *arg, unit_t* cell);
+bool is_puzzle_finished(puzzle_t* puzzle);
 ```
 
 ### Create module
@@ -121,7 +124,7 @@ We made the same assumptions as those listed within the specs of this assignment
 Additionally, we assumed that it is largely not possible to determine a unique solution given the requirements of this assignment (that at least 40 missing numbers are present in the generated puzzle). Please see our corresponding pseudo-proof for our reasoning behind this.
 
 ### Pseudo-proof of uniqueness
-In `Proof_Sudoku_Solutions.pdf`, we show an example of how one could implement a sudoku algorithm that guarantees uniqueness for created puzzles using Group Theory.  
+In `Proof_Sudoku_Solutions.pdf`, we show an example of how one could implement a sudoku algorithm that guarantees uniqueness for created puzzles using Group Theory. However, in general, this is a NP-hard problem where uniqueness is guaranteed only in defined circumstances based on automorphic and symmetric grouping. As such, our sudoku creation algorithm attempts to generate a close to a unique puzzle as possible (this accuracy will deviate based on the difficult levels).  
 
 ### Files/directories
 
@@ -151,7 +154,9 @@ Other directories/files:
     * `FuzzTest.sh` - generates 'n' created puzzles
     * `UnitTester.sh` - implements unit testing 
 * `puzzlefiles`: contains a variety of hard-coded puzzles, for testing purposes
-* `ncurses` - extra credit interactive terminal functionality -- see README.md in directory for more information
+* `ncurses` - extra credit interactive terminal functionality -- see README.md in ncurses directory for more information
+    * `interface.h/interface.c` - header and driver file for terminal interaction
+    * `Makefile` - compilation
 
 ### Compilation
 
@@ -160,8 +165,11 @@ To compile, simply `make`.
 ### Testing
 
 For our testing our stragedy was centered around trying run as many cases as we possibly could and see how our code reacted. We made the test cases quite robust in order to accruately gauge our code's efficiency. There are three files to look at. 
-1. FuzzTest.sh which is a shell script that intakes one input from the user which is the number of tests to generate. This script will call the create function save the output to a file that is then passed into the solve function which will solve it and then return the solved sudoku to a different file called fuzz.out
+
+1. FuzzTest.sh which is a shell script that takes one input from the user which is the number of tests to generate. This script will call the create function, save the output to a file that is then passed into the solve function, which will solve it and then return the solved sudoku to a different file called fuzz.out
+
 2. Unit Testing- Our Unit Testing is all done in one shell script that calls the solve function and checks to see if it is properly working and generating valid sudokus. we check this by passing the sudokus to the solver and seeing if any errors arise. We also test solver directly by passing it invlaid sudokus of various types from incorrect formatting to incorrect numbers and even blank sudokus. Then we pass valid sudokus and compare the results to the right answer to make sure it is correct.
+
 3. Testing.sh just runs make and make clean and then runs both of the tests previously mentioned. 
 
 ### Extra Credit

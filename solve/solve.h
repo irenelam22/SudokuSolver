@@ -55,21 +55,4 @@ void solve(FILE* file_name);
  */
 bool solve_puzzle(puzzle_t* puzzle);
 
-/**************** solve ****************/
-/* Clean up the given unit and move backwards to adjust the puzzle until
- * we can get a valid solution
- * 
- * Caller provides:
- *   a puzzle and a unit
- * We return:
- *   a new unit
- * We do:
- *  ignore if NULL puzzle or unit passed in
- *  "delete" the current unit
- *  move back one unit (while we still can/need to)
- *  remove this value from the possibles list of the next unit
- *  (effectively removing the value from our current unit's possibles list)
- */
-unit_t* backtrace(puzzle_t* puzzle, unit_t* unit);
-
 #endif
