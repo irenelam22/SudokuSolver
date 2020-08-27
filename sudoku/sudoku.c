@@ -15,16 +15,18 @@ group: project-kidd
 #include "../libcs50/memory.h"
 
 // local function prototypes
-static void process_arguments(int argc, char* argv[], char** command, char** file_name, FILE** fp);
+static int get_minshown(char *difficulty); 
+static void process_arguments(int argc, char* argv[], char** command, char** file_name, FILE** fp, int *minshown);
 
 int main(const int argc, char *argv[]){
     char* command = NULL;                                   // should either be "create" or "solve"
     char* file_name = NULL;                                 // note: user may or may not pass a file
     FILE *fp = NULL; 
+    int minshown; 
 
-    process_arguments(argc, argv, &command, &file_name, &fp);
+    process_arguments(argc, argv, &command, &file_name, &fp, &minshown);
     if ( strcmp(command, "create") == 0){                   // if the command is create...
-        create(fp);                       // create the puzzle
+        create(stdout, minshown);                       // create the puzzle
     }
     else if ( strcmp(command, "solve") == 0){               // if the command is solve...
 	solve(fp);                                       // solve the provided puzzle
@@ -36,32 +38,33 @@ int main(const int argc, char *argv[]){
     return 0;
 }
 
-static void process_arguments(int argc, char* argv[], char** command, char** file_name, FILE **fp){
-    if ( argc < 2 || argc > 3){                             // expect only 2 or 3 arguments
-       fprintf(stderr, "Incorrect usage...\nFor create: ./sudoku create [OPTIONAL: FILE NAME]\nFor solve: ./sudoku solve [PUZZLE FILE NAME]\n\n");
-       exit(1);
+static void process_arguments(int argc, char* argv[], char** command, char** file_name, FILE **fp, int *minshown){
+    if (argc < 2 || argc > 3) {				    // check number of arguments 
+            fprintf(stderr, "Incorrect usage...\nFor create: ./sudoku create [OPTIONAL: difficultyLevel]\nFor solve: ./sudoku solve [OPTIONAL: PUZZLE_FILE_NAME]\n\n");
+            exit(1);
     }
 
     *command = argv[1];                                     // extract the command
-    if ( argc == 3 ){                                       // if there is a file name provided
-        *file_name = argv[2];                               // extract it
-    }   
 
     if ( strcmp(*command, "create") == 0){                  // if the command is "create"...
-        if ( *file_name == NULL ){                          // and no file name is provided, then use standard output
-            *fp = stdout; 
-		return;
-        }
-        *fp = fopen(*file_name, "w");                  // otherwise, try opening this file for writing
-        if ( *fp == NULL ){                                  // exit if any error with this
-            fprintf(stderr, "Please pass in a writable file for create.\n");
-            exit(2);
-        }       
-        //fclose(*fp);                                         // close our test file
-
+        char *difficulty; 
+	if (argc == 3) {				    // if difficulty level provided, read that in
+	    difficulty = argv[2];
+	}
+	else {
+	    difficulty = "medium";			    // if no difficulty level provided, default to medium
+	}
+	*minshown = get_minshown(difficulty);
+	if (*minshown == 0) {
+	    fprintf(stderr, "Incorrect usage...\nFor create: ./sudoku create [OPTIONAL: difficultyLevel]\nInput 'easy', 'medium', or 'hard' for difficultyLevel\n");
+	    exit(2); 
+	} 
     } 
     else if ( strcmp(*command, "solve") == 0){              // if the command is "solve"...
-        if ( *file_name == NULL ){                          // and no file name is provided, then use standard input
+	if (argc == 3) {
+	    *file_name = argv[2];
+	}
+	if ( *file_name == NULL ){                          // and no file name is provided, then use standard input
              *fp = stdin; 
 		return;
         }
@@ -70,11 +73,29 @@ static void process_arguments(int argc, char* argv[], char** command, char** fil
             fprintf(stderr, "Please pass in a readable puzzle file for solve.\n");
             exit(3);
         }
-        //fclose(fp);                                         // close this test file
-
     } 
     else{
-        fprintf(stderr, "Incorrect usage...\nFor create: ./sudoku create [OPTIONAL: FILE NAME]\nFor solve: ./sudoku solve [PUZZLE FILE NAME]\n\n");
+        fprintf(stderr, "Incorrect usage...\nFor create: ./sudoku create [OPTIONAL: difficultyLevel]\nFor solve: ./sudoku solve [PUZZLE FILE NAME]\n\n");
         exit(1);
     }
+}
+
+/********get_minshown*********/
+/* Calculates minimum numbers to show given the four difficulty levels
+ * Where the difficulty levels have these ranges: 
+ * 	Easy: 39-41, Medium: 33-38, Hard: 27-32
+*/
+static int get_minshown(char* difficulty)
+{
+    int minshown = 0; 
+    if (strcmp(difficulty, "easy") == 0) {
+    	minshown = 39; 
+    }
+    else if (strcmp(difficulty, "medium") == 0) {
+        minshown = 33; 
+    }
+    else if (strcmp(difficulty, "hard") == 0) {
+        minshown = 27; 
+    }
+    return minshown; 
 }
