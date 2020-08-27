@@ -165,8 +165,11 @@ To compile, simply `make`.
 ### Testing
 
 For our testing our stragedy was centered around trying run as many cases as we possibly could and see how our code reacted. We made the test cases quite robust in order to accruately gauge our code's efficiency. There are three files to look at. 
-1. FuzzTest.sh which is a shell script that intakes one input from the user which is the number of tests to generate. This script will call the create function save the output to a file that is then passed into the solve function which will solve it and then return the solved sudoku to a different file called fuzz.out
+
+1. FuzzTest.sh which is a shell script that takes one input from the user which is the number of tests to generate. This script will call the create function, save the output to a file that is then passed into the solve function, which will solve it and then return the solved sudoku to a different file called fuzz.out
+
 2. Unit Testing- Our Unit Testing is all done in one shell script that calls the solve function and checks to see if it is properly working and generating valid sudokus. we check this by passing the sudokus to the solver and seeing if any errors arise. We also test solver directly by passing it invlaid sudokus of various types from incorrect formatting to incorrect numbers and even blank sudokus. Then we pass valid sudokus and compare the results to the right answer to make sure it is correct.
+
 3. Testing.sh just runs make and make clean and then runs both of the tests previously mentioned. 
 
 ### Extra Credit
