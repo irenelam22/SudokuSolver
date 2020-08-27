@@ -14,8 +14,9 @@ all:
 	make -C sudoku
 
 ############## test: make all tests ##########
-test:
-	make -C solve test
+test: 
+	make -C testing test
+
 	
 
 ############## valgrind all programs ##########

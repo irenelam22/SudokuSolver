@@ -44,13 +44,11 @@ echo "Now testing Sudoku Solver with edge cases"
 echo "Passing invalid Puzzle"
 ../sudoku/sudoku solve ../puzzlefiles/badpuzzle.txt
 
-#uncomment these two when we have a catcher for incorrect format errors and out of bound number entries
+echo "Passing invalid Puzzle Format"
+../sudoku/sudoku solve ../puzzlefiles/invalid_format_puzzle.txt
 
-# echo "Passing invalid Puzzle Format"
-# ../sudoku/sudoku solve ../puzzlefiles/invalid_format_puzzle.txt
-
-# echo "Passing a sudoku with values outside of the bounds"
-# ../sudoku/sudoku solve ../puzzlefiles/wrong_num.txt
+echo "Passing a sudoku with values outside of the bounds"
+../sudoku/sudoku solve ../puzzlefiles/wrong_num.txt
 
 
 echo "Passing 2 empty puzzles"
@@ -59,7 +57,7 @@ echo "Passing 2 empty puzzles"
 
 
 if diff --brief nonunique.out nonunique2.out; then
-    echo "No Difference between two different generations of the same empty puzzle"
+    echo "No Difference between two different runs of solve on the same empty puzzle"
 else
     echo "empty_puzzle does not generate a unique solution"
 fi
