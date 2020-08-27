@@ -12,5 +12,6 @@ test:
 
 clean:
 	rm -rf *.dSYM  # MacOS debugger info
+	rm -rf fuzz.out
 	rm -f *~ *.o
 	rm -f $(PROG)
