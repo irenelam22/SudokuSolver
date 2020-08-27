@@ -136,4 +136,6 @@ void solveable_helper(void* ptr, unit_t* current_cell);
  */
 bool is_puzzle_solveable(puzzle_t* puzzle); 
 
+bool is_puzzle_finished(puzzle_t* puzzle);
+
 #endif // __PUZZLE_H 

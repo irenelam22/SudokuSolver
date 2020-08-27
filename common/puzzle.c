@@ -23,6 +23,13 @@ const int MAX_COL = 9;
 const int UNIT_SIZE = 32;  
 const int EMPTY_CELL = 0;
 
+struct arr_three {
+    counters_t** row_arr;
+    counters_t** col_arr;
+    counters_t** box_arr;
+    bool check;
+};
+
 /*******puzzle_new********/
 /* Create new empty puzzle, where all values are 0
  * Inputs: none
@@ -334,4 +341,78 @@ bool is_puzzle_solveable(puzzle_t* puzzle)
     bool solveable = true;
     puzzle_iterate(puzzle, &solveable, solveable_helper);
     return solveable;
+}
+
+void valid_populate_helper(void *arg, unit_t* cell)
+{
+    // fprintf(stderr, "Check row %d col %d\n", cell->row_num, cell->col_num);
+    struct arr_three* checker = arg;
+
+    if (checker == NULL || cell == NULL ) {
+        return;
+    }
+    if (!(checker->check)) {
+        return;
+    }
+    if (cell-> val == 0) {
+        checker->check = false;
+        return;
+    }
+    counters_add(checker->row_arr[cell->row_num], cell->val);
+    counters_add(checker->col_arr[cell->col_num], cell->val);
+    counters_add(checker->box_arr[cell->box_num], cell->val);
+}
+
+void valid_check_helper(void *arg, unit_t* cell)
+{
+    struct arr_three* checker = arg;
+    if (checker == NULL || cell == NULL ) {
+        return;
+    }
+    if (!(checker->check)) {
+        return;
+    }
+    for (int i = 0; i < 9; i++) {
+        if (!(checker -> check)) {
+            break;
+        }
+        for (int j = 0; j < 9; j++) {
+            if (counters_get(checker->row_arr[i], j) != 1) {
+                checker -> check = false;
+            }
+            if (counters_get(checker->col_arr[i], j) != 1) {
+                checker -> check = false;
+            }
+            if (counters_get(checker->box_arr[i], j) != 1) {
+                checker -> check = false;
+            }
+        }
+    }
+}
+
+bool is_puzzle_finished(puzzle_t* puzzle)
+{
+    // fprintf(stderr,"Failed\n");
+    struct arr_three collections  = {
+        .row_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
+        .col_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
+        .box_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
+        .check = true,
+    };
+    for (int i = 0; i < 9; i++) {
+        collections.row_arr[i] = counters_new();
+        collections.col_arr[i] = counters_new();
+        collections.box_arr[i] = counters_new();
+    }
+    
+    puzzle_iterate(puzzle, &collections, valid_populate_helper);
+    // if (collections.check) {
+    //     puzzle_iterate(puzzle, &collections, valid_check_helper);
+    // }
+    for (int i = 0; i < 9; i++) {
+        counters_delete(collections.row_arr[i]);
+        counters_delete(collections.col_arr[i]);
+        counters_delete(collections.box_arr[i]);
+    }
+    return collections.check;
 }

@@ -28,7 +28,7 @@ void print_help()
     mvaddstr(9, 30, "Press arrow keys to move left/right/up/down");
     mvaddstr(10, 30, "Press integers 1 through 9 to insert");
     mvaddstr(11, 30, "Press 0 or d to delete the value in the current unit");
-    mvaddstr(12, 30, "Press f to jump to the first unfilled unit");
+    mvaddstr(12, 30, "Press n to jump to the first unfilled unit");
     mvaddstr(13, 30, "Press c to complete the remaining cells if possible");
     mvaddstr(14, 30, "Press q to quit");
 }
@@ -133,7 +133,6 @@ int main(void)
     unit_t* ptr = puzzle_get_unit(puzzle, start -> row_num, start -> col_num);
     delete_unit(start);
 
-    int count = 0;
     while (true) {
         pprint(puzzle, ptr);
         refresh();
@@ -160,7 +159,7 @@ int main(void)
             case 's':
                 ptr = puzzle_get_unit(puzzle, (row + 1) % 9, col);
                 break;
-            case 'f':
+            case 'n':
                 start = next_unit(puzzle);
                 if (start == NULL) {
                     mvaddstr(LINES - 2, 2, "There is no next in this puzzle!");
@@ -199,20 +198,19 @@ int main(void)
                 break;
         }
 
-        // if (valid_sudoku(puzzle, 9)) {
-        //     mvaddstr(LINES - 1, 2, "Congratulations! You've solved the puzzle!");
-        //     break;
-        // } else {
-        //     mvaddstr(LINES - 1, 2, "Uh oh! Puzzle not solved");
-        // }
-
+        if (is_puzzle_finished(puzzle)) {
+            attron(COLOR_PAIR(NEW_PAIR));
+            mvaddstr(LINES - 1, 2, "CONGRATULATIONS! You've solved the puzzle!");
+            attroff(COLOR_PAIR(NEW_PAIR));
+            sleep(3);
+            break;
+        } 
         // Quit
         if(ch == 'q') {
             break;
         }
     }
 
-    // Replace with final puzzle/message
     refresh();
     puzzle_delete(puzzle);
     

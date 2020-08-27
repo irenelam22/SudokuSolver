@@ -166,6 +166,42 @@ int possibles_print()
 
     possibles_create(puzzle, unit);
     printf("%s", possibles_print_ncurses(unit));
+    puzzle_delete(puzzle);
+    return 0;
+}
+
+int finish_puzzle_test()
+{
+    FILE* file7 = fopen("../puzzlefiles/medium.txt", "r");
+    puzzle_t* puzzle = puzzle_load(file7); 
+    fclose(file7);
+
+    if (is_puzzle_finished(puzzle)) {
+        fprintf(stderr,"Puzzle finish incorrectly for unsolved puzzle\n");
+        return 1;
+    }
+
+    FILE* file8 = fopen("../puzzlefiles/easyans.txt", "r");
+    puzzle_t* puzzle2 = puzzle_load(file8); 
+    fclose(file8);
+
+    if (is_puzzle_finished(puzzle2)) {
+        fprintf(stderr, "Puzzle finished incorrectly for answer puzzle\n");
+        return 1;
+    }
+
+    FILE* file9 = fopen("../puzzlefiles/easy.txt", "r");
+    puzzle_t* puzzle3 = puzzle_load(file9); 
+    fclose(file9);
+
+    if (is_puzzle_finished(puzzle3)) {
+        fprintf(stderr,"Puzzle finish incorrectly for unsolved puzzle easy\n");
+        return 1;
+    }
+
+    puzzle_delete(puzzle);
+    puzzle_delete(puzzle2);
+    puzzle_delete(puzzle3);
     return 0;
 }
 
@@ -175,6 +211,7 @@ int main(const int argc, const char *argv[])
     completed_next_unit();
     possibles_update_test();
     solveable_test();
-    possibles_print();
+    // possibles_print();
+    finish_puzzle_test();
     return 0;
 }
