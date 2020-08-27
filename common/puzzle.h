@@ -136,6 +136,28 @@ void solveable_helper(void* ptr, unit_t* current_cell);
  */
 bool is_puzzle_solveable(puzzle_t* puzzle); 
 
+/******* valid_populate_helper ********/
+/* Populates every counters set with the values in its respective row/col/box
+ * Iterative function used in is_puzzle_finished
+ * Inputs: arr_three struct, unit for iterating
+ * Output: none (directly modifies arr_three)
+ */
+void valid_populate_helper(void *arg, unit_t* cell);
+
+/******* valid_check_helper ********/
+/* Checks whether each counters set has one and only one count for each number
+ * from 1 through 9
+ * Iterative function used in is_puzzle_finished
+ * Inputs: arr_three struct containing all of the counters sets, unit to iterate
+ * Output: none (directly modifies arr_three struct)
+ */
+void valid_check_helper(void *arg, unit_t* cell);
+
+/******* is_puzzle_finished ********/
+/* Checks whether a puzzle is finished (e.g. all units are populated correctly)
+ * Inputs: puzzle
+ * Output: true if finished, false otherwise
+ */
 bool is_puzzle_finished(puzzle_t* puzzle);
 
 #endif // __PUZZLE_H 
