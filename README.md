@@ -138,7 +138,7 @@ Other directories/files:
 * `common`: 
     * `unit.h/unit.c` - header and implementation of unit module
     * `puzzle.h/puzzle.c` - header and implementation of puzzle module
-    * `movechecker.h/movechecker.c` - header and implementation of puzzle checking functionality 
+    * `puzzle_unittest.c` - puzzle module unit testing, called in testing script  
     * `Makefile` - compilation 
 * `libcs50`: CS 50 provided code
 * `create`: 
