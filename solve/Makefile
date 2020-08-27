@@ -3,8 +3,8 @@
 # Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
 # CS50, Summer 2020
 
-PROG = solve solve_test
-OBJS = solve.o solve_test.o
+PROG = solve 
+OBJS = solve.o 
 LIBS = ../common/common.a ../libcs50/libcs50.a 
 
 # uncomment the following to turn on verbose memory logging
@@ -24,9 +24,6 @@ all: $(PROG)
 # solve: solve.o
 
 solve: solve.o $(LIBS)
-	$(CC) $(CFLAGS) $^ -o $@
-
-solve_test: solve_test.o $(LIBS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 # test:

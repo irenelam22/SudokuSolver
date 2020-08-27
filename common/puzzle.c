@@ -87,6 +87,27 @@ void puzzle_print(FILE *fp, puzzle_t *puzzle)
     }
 }
 
+/********clean_incomplete_puzzle*********/
+/* Given the row, column, and unit_num of the last instantiated unit,
+ * free all the previous units and rows, and then free the puzzle itself
+ * Used in puzzle_load when an invalid format is detected
+ */
+void clean_incomplete_puzzle(puzzle_t *puzzle, int row, int col, int unit_num)
+{
+    for (int i = 0; i < row; i++) {			// clean up all prior rows
+	    for (int j = 0; j < MAX_COL; j++) {
+		    delete_unit(puzzle[i][j]); 
+	    }
+	    free(puzzle[i]);
+    }
+    for (int j = 0; j < col; j++) { 			// clean up current row
+	    delete_unit(puzzle[row][j]); 
+    }
+    free(puzzle[row]);
+    
+    free(puzzle); 					// free entire puzzle
+}
+
 /**********puzzle_load*************/
 /* Takes a pointer to a file that contains a properly formatted
 *  sudoku, then loads that sudoku into a new puzzle struct, 
@@ -117,7 +138,9 @@ puzzle_t *puzzle_load(FILE *fp)
                 // If the next character is also a digit, then the format is invalid
                 if (i+1<strlen(line) && isdigit(line[i+1])) {
                     fprintf(stderr, "Invalid puzzle format\n"); 
-                    return NULL; 
+                    clean_incomplete_puzzle(puzzle, row, col, unit_num); 
+                    free(line);
+		            return NULL; 
                 }
                 // Subtract out 48 to get actual digit value
                 val = line[i] - 48;
@@ -129,7 +152,8 @@ puzzle_t *puzzle_load(FILE *fp)
             // If character is not a space, or "|", then the format is invalid
             else if (line[i] != 32 && line[i] != 124) {
                 fprintf(stderr, "Invalid puzzle format\n"); 
-                return NULL; 
+                clean_incomplete_puzzle(puzzle, row, col, unit_num); 
+		        return NULL; 
             }
         }
         // Free memory, and move to the next row
@@ -140,6 +164,7 @@ puzzle_t *puzzle_load(FILE *fp)
     // If we didn't receive enough units for the puzzle, then the format is invalid
     if (unit_num-1 < MAX_ROW*MAX_COL) {
         fprintf(stderr, "Invalid puzzle format\n"); 
+	    clean_incomplete_puzzle(puzzle, row, col, unit_num);
         return NULL;
     }
     // Otherwise, puzzle has a valid format
@@ -343,11 +368,17 @@ bool is_puzzle_solveable(puzzle_t* puzzle)
     return solveable;
 }
 
+/******* valid_populate_helper ********/
+/* Populates every counters set with the values in its respective row/col/box
+ * Iterative function used in is_puzzle_finished
+ * Inputs: arr_three struct, unit for iterating
+ * Output: none (directly modifies arr_three)
+ */
 void valid_populate_helper(void *arg, unit_t* cell)
 {
-    // fprintf(stderr, "Check row %d col %d\n", cell->row_num, cell->col_num);
     struct arr_three* checker = arg;
 
+    // Error handling
     if (checker == NULL || cell == NULL ) {
         return;
     }
@@ -358,20 +389,32 @@ void valid_populate_helper(void *arg, unit_t* cell)
         checker->check = false;
         return;
     }
+    // Populate each counters array set in their respective values
     counters_add(checker->row_arr[cell->row_num], cell->val);
     counters_add(checker->col_arr[cell->col_num], cell->val);
     counters_add(checker->box_arr[cell->box_num], cell->val);
 }
 
+/******* valid_check_helper ********/
+/* Checks whether each counters set has one and only one count for each number
+ * from 1 through 9
+ * Iterative function used in is_puzzle_finished
+ * Inputs: arr_three struct containing all of the counters sets, unit to iterate
+ * Output: none (directly modifies arr_three struct)
+ */
 void valid_check_helper(void *arg, unit_t* cell)
 {
     struct arr_three* checker = arg;
+
+    // Error-handling
     if (checker == NULL || cell == NULL ) {
         return;
     }
     if (!(checker->check)) {
         return;
     }
+
+    // Iterate through each counters set's value and ensure the count is 1
     for (int i = 0; i < 9; i++) {
         if (!(checker -> check)) {
             break;
@@ -390,29 +433,43 @@ void valid_check_helper(void *arg, unit_t* cell)
     }
 }
 
+/******* is_puzzle_finished ********/
+/* Checks whether a puzzle is finished (e.g. all units are populated correctly)
+ * Inputs: puzzle
+ * Output: true if finished, false otherwise
+ */
 bool is_puzzle_finished(puzzle_t* puzzle)
 {
-    // fprintf(stderr,"Failed\n");
+    // Instantiate our struct of row/col/box counters set arrays
     struct arr_three collections  = {
         .row_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
         .col_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
         .box_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
         .check = true,
     };
+
+    // Initialize all counters sets
     for (int i = 0; i < 9; i++) {
         collections.row_arr[i] = counters_new();
         collections.col_arr[i] = counters_new();
         collections.box_arr[i] = counters_new();
     }
     
+    // Call the item functions to test that the puzzle is finished
     puzzle_iterate(puzzle, &collections, valid_populate_helper);
-    // if (collections.check) {
-    //     puzzle_iterate(puzzle, &collections, valid_check_helper);
-    // }
+    if (collections.check) {
+        puzzle_iterate(puzzle, &collections, valid_check_helper);
+    }
+
+    // Clean up
     for (int i = 0; i < 9; i++) {
         counters_delete(collections.row_arr[i]);
         counters_delete(collections.col_arr[i]);
         counters_delete(collections.box_arr[i]);
     }
+
+    free(collections.row_arr);
+    free(collections.col_arr);
+    free(collections.box_arr);
     return collections.check;
 }

@@ -29,7 +29,7 @@ int main(const int argc, char *argv[]){
         create(stdout, minshown);                       // create the puzzle
     }
     else if ( strcmp(command, "solve") == 0){               // if the command is solve...
-	solve(fp);                                       // solve the provided puzzle
+	    solve(fp);                                          // solve the provided puzzle
     }
     else{                                                   // if the command is not "create" or solve"...
         return 1;                                           // then there's an error

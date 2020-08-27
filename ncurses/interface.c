@@ -178,6 +178,7 @@ int main(const int argc, char *argv[])
     char* filename = "../puzzlefiles/easy.txt";
     FILE* puzzle_file = fopen(filename, "r");
     puzzle_t* puzzle = puzzle_load(puzzle_file);
+    fclose(puzzle_file);
 
     // Initialize ncurses library
     initscr();

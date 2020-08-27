@@ -34,6 +34,7 @@ void solve(FILE* puzzle_file)
 
     puzzle_t* puzzle = puzzle_load(puzzle_file);             // create our puzzle
     if (puzzle == NULL) { 
+        fclose(puzzle_file);
 	    return;
     }
 
@@ -86,40 +87,4 @@ bool solve_puzzle(puzzle_t* puzzle)
     }
     unit -> val = 0;
     return false;                                       // if not every unit gets filled, we did not solve
-}
-
-/*******backtrace********/
-/* Cleans up current unit and returns the previous unit
- * Inputs: puzzle, unit
- * Output: previous unit (if any)
-*/
-unit_t* backtrace(puzzle_t* puzzle, unit_t* unit)
-{
-    if ( puzzle == NULL || unit == NULL ){
-        fprintf(stderr, "Invalid parameters for backtrace\n");
-        return NULL;
-    }
-    counters_t* possibles = unit -> possibles;             // get the given unit's possibles list
-    counters_delete(possibles);                            // delete the possibles list
-    unit -> val = 0;                                       // reset the value to zero (essentially deleting the entry)
-                                 
-    int row = unit -> row_num;
-    int col = unit -> col_num;
-    int val = unit -> val;
-
-    if (col == 0) {                                         // if we reach the beginning of the row
-        col = 8;                                            // go to the end of the previous row
-        row--;
-    }
-    else {
-        col--;                                              // otherwise... move back one column
-    }       
-
-    unit_t* new_unit = NULL;   
-    if (row >= 0 && col >= 0) {                              // as long as we're within our puzzle
-        new_unit = puzzle_get_unit(puzzle, row, col);        // get the next unit (the one where the insertion failed)
-        possibles_remove(new_unit, val);                     // remove the current value from that unit's possibles list
-        return new_unit;
-    }
-    return NULL;
 }

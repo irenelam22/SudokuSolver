@@ -88,6 +88,33 @@ bool validate_inputs(int num_inputs, char* filename);
 int main(const int argc, char *argv[]);
 ```
 
+The module also expects the following methods (in addition to the methods listed in the main `README`):
+```c
+/******* valid_populate_helper ********/
+/* Populates every counters set with the values in its respective row/col/box
+ * Iterative function used in is_puzzle_finished
+ * Inputs: arr_three struct, unit for iterating
+ * Output: none (directly modifies arr_three)
+ */
+void valid_populate_helper(void *arg, unit_t* cell);
+
+/******* valid_check_helper ********/
+/* Checks whether each counters set has one and only one count for each number
+ * from 1 through 9
+ * Iterative function used in is_puzzle_finished
+ * Inputs: arr_three struct containing all of the counters sets, unit to iterate
+ * Output: none (directly modifies arr_three struct)
+ */
+void valid_check_helper(void *arg, unit_t* cell);
+
+/******* is_puzzle_finished ********/
+/* Checks whether a puzzle is finished (e.g. all units are populated correctly)
+ * Inputs: puzzle
+ * Output: true if finished, false otherwise
+ */
+bool is_puzzle_finished(puzzle_t* puzzle);
+```
+
 ### Pseudocode
 1. Load the file into a `puzzle` struct
 2. Initialize `ncurses` library
@@ -109,9 +136,11 @@ int main(const int argc, char *argv[]);
 
 ### Assumptions
 
-As this is extra credit, I (Irene Lam) assumed that a detailed IMPLEMENTATION.md and DESIGN.md were not necessary. I have, however, included pseudocode and brief implementation details on how I used the ncurses library.
+As this is extra credit, I (Irene Lam) assumed that a detailed IMPLEMENTATION.md and DESIGN.md were not necessary. I have, however, included pseudocode and implementation details above on how I used the ncurses library.
 
-Additionally, the ncurses library comes with memory leaks (a lot...). I assumed that all memory leaks innate to using the methods of the program (e.g. `initscr()`, `refresh()`, `endwin()`) could be ignored. 
+Additionally, the ncurses library comes with memory leaks (a lot...). I assumed that all memory leaks innate to using the methods of the program (e.g. `initscr()`, `refresh()`, `endwin()`) could be ignored. All memory leaks caused by my methods, however, are my responsibility should any appear when running `valgrind`.
+
+I also assumed that a testing script for this code was not necessary. Unit testing is covered in `puzzle_unittest.c` while integration testing using a script is more difficult because the program is interactive and thus requires manual input.
 
 ### Files
 
