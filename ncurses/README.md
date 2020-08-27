@@ -11,8 +11,6 @@ The interactive puzzle allows users to maneuver through the terminal. Upon gener
 
 The program allows the user to move their cursor, which will update the possibles list automatically. 
 
-![Moving cursor](images/moving_cursor.png)
-
 To complete the puzzle, users should insert a number from 1 through 9 in each yellow unit, or delete if necessary. A possibles list is displayed at the bottom to help the user keep track of the numbers that can be filled at any given unit (removing values that displayed in the unit's row/column/box).
 
 ![Insert](images/inserting.png)
@@ -35,7 +33,7 @@ bool validate_inputs(int num_inputs, char* filename);
 int main(const int argc, char *argv[]);
 ```
 
-Please run the following commands in your terminal for color:
+You may need to run the following commands in your terminal for color:
 ```c
 export PS1='\[\033[1;36m\]\u\[\033[1;31m\]@\[\033[1;32m\]\h:\[\033[1;35m\]\w\[\033[1;31m\]\$\[\033[0m\]'
 export force_color_prompt=yes
@@ -44,7 +42,8 @@ export force_color_prompt=yes
 Please follow the following instructions to run the program:
 1. Navigate to the `ncurses` directory (if you're in the main directory, type `cd ncurses`)
 2. Make the directory using `make`
-3. Run the program using `./interface` 
+3. Run the program using `./interface puzzle_generated_file`
+    e.g. `./interface ../puzzlefiles/easy.txt`
 4. Enjoy!
 
 ### Implementation
@@ -116,7 +115,7 @@ bool is_puzzle_finished(puzzle_t* puzzle);
 ```
 
 ### Pseudocode
-1. Load the file into a `puzzle` struct
+1. Validate input arguments and load the file into a `puzzle` struct
 2. Initialize `ncurses` library
 3. Color the puzzle (for the current puzzle, paranthesis, original puzzle, and units to be filled in were designated three different color pairs)
 4. Add the splash screen (optional)
@@ -147,5 +146,5 @@ I also assumed that a testing script for this code was not necessary. Unit testi
 * `Makefile` - compilation procedure
 * `interface.c` - the implementation file
 * `interface.h` - the header file 
-* `images/` - directory of images that showcase the program
+* `images/` - directory of images that showcase the program running
 
