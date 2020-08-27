@@ -14,7 +14,7 @@
  *   Output: 
  *    printed puzzle, to either stdout or given filename
  */
-void create(FILE *fp);
+void create(FILE *fp, int minshown);
 
 /******* fill_puzzle *******/
 /* Randomly fills in the entire puzzle, making sure sudoku rules are held 
@@ -34,6 +34,17 @@ bool fill_puzzle(puzzle_t *puzzle);
  *      * true if enough numbers are hidden (at least 40), false otherwise 
  */
 bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
+
+/******* remove_random_num *******/
+/* Randomly removes one unit from a given puzzle
+ * Inputs: 
+ * 	* puzzle: current puzzle struct to remove from
+ * 	* numshown: pointer to the current number of units shown in the puzzle
+ * 	* row, col: pointers to where we are removing from in the puzzle
+ * Output: 
+ * 	* value of the unit removed from the puzzle, in case it needs to get added back  
+ */
+int remove_random_num(puzzle_t *puzzle, int *numshown, int* row, int* col);
 
 /******* has_one_solution *******/
 /* Our best estimate of testing to see if a puzzle has one unique solution
