@@ -207,4 +207,4 @@ Similarly, we check that `solve` will correctly solve a puzzle with a known solu
 Lastly we have a 'testing.sh' shell script that will make clean make and then run both of the tests previously mentioned to increase the efficiency of running test cases. 
 
 
-Please see `DESIGN.md` for more testing specific examples.
+Please see `TESTING.md` for more testing specific examples.

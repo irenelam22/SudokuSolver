@@ -68,7 +68,7 @@ Inputs:
 * (Optional) Puzzle file name: this file must be readable and formatted as a puzzle (see above)
  
 Outputs: 
-* Error message if invalid arguments
+* Error message if invalid arguments or no solution exists for the provided puzzle
 * Otherwise, the completed puzzle is printed to stdout (see the format above)
  
 Note: We load the `PUZZLE_FILE_NAME` into a puzzle data structure. In the basic sudoku puzzle, each puzzle is a 9 by 9 grid of `unit` data structures. Solve then iterates through the structure and recursively fills in numbers from 1-9 based on the rules of sudoku, backtracing to a previous unit when necessary.
@@ -152,9 +152,8 @@ Please see the *Major Data Structures* section for more details regarding these 
 
 We anticipate the following modules or functions:
  
-1. *main*, which parses arguments and initializes other modules
+1. *solve*, which parses arguments, initializes other modules, and calls our recursive function
 2. *solve_puzzle*, which recursively calls the following methods to fill in the missing numbers from the given puzzle (presumably incomplete)
-3. *backtrace*, which deletes/cleans up the current unit and returns a pointer to the previous modifiable pointer (if any)
  
 And solve will also rely on *unit*, *puzzle*, and *counterset*, as described above in create, and in the *Major Data Structures* section. 
  
@@ -215,10 +214,10 @@ The solve portion of Sudoku will run as follows:
 5. Clean up and return false as there is no solution to the puzzle
 
  
- 
- 
 ### Testing plan
 From a high level, we should be able to test our creator and solver pretty easily by creating a few puzzles and passing them into our solver to see if we get completed puzzles as the output. Of course, we will want to test each piece individually, as well, and we will want to do thorough error checking. We can also create a fuzzy testing file which randomly generates a few puzzles and passes them into our solver to make sure that it works properly. 
+
+Please see `testing.md` for more details.
 
 ##### Unit Testing
 We will test some of the individual functions in puzzle solve and create. </br> </br>

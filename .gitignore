@@ -7,3 +7,5 @@ test
 core
 puzzletest
 vgcore.*
+puzzle_unittest
+puzzle_unittest.o

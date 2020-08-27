@@ -124,6 +124,7 @@ We made the same assumptions as those listed within the specs of this assignment
 Additionally, we assumed that it is largely not possible to determine a unique solution given the requirements of this assignment (that at least 40 missing numbers are present in the generated puzzle). Please see our corresponding pseudo-proof for our reasoning behind this.
 
 ### Pseudo-proof of uniqueness
+
 In `Proof_Sudoku_Solutions.pdf`, we show an example of how one could implement a sudoku algorithm that guarantees uniqueness for created puzzles using Group Theory. However, in general, this is a NP-hard problem where uniqueness is guaranteed only in defined circumstances based on automorphic and symmetric grouping. As such, our sudoku creation algorithm attempts to generate a close to a unique puzzle as possible (this accuracy will deviate based on the difficult levels).  
 
 ### Files/directories
@@ -138,7 +139,6 @@ Other directories/files:
 * `common`: 
     * `unit.h/unit.c` - header and implementation of unit module
     * `puzzle.h/puzzle.c` - header and implementation of puzzle module
-    * `movechecker.h/movechecker.c` - header and implementation of puzzle checking functionality 
     * `Makefile` - compilation 
 * `libcs50`: CS 50 provided code
 * `create`: 
