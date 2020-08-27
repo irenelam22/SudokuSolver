@@ -34,6 +34,7 @@ void solve(FILE* puzzle_file)
 
     puzzle_t* puzzle = puzzle_load(puzzle_file);             // create our puzzle
     if (puzzle == NULL) { 
+        fclose(puzzle_file);
 	    return;
     }
 
