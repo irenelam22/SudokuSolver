@@ -18,11 +18,11 @@ Dartmouth CS50, Summer 2020
 #include "../common/unit.h"
 #include "../libcs50/file.h"
 
-// local function prototypes
-static bool fill_puzzle(puzzle_t *puzzle); 
-static bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown); 
-static bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz); 
-static void copy_puzzle(void *arg, unit_t* unit); 
+// function prototypes
+bool fill_puzzle(puzzle_t *puzzle); 
+bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown); 
+bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz); 
+void copy_puzzle(void *arg, unit_t* unit); 
 
 /******* create *******/
 /* Main creating functionality 
@@ -33,14 +33,18 @@ static void copy_puzzle(void *arg, unit_t* unit);
  */
 void create(FILE *fp, int minshown)
 {
+    if (fp == NULL || minshown < 22 || minshown > 41) {
+	fprintf(stderr, "invalid arguments passed to create\n");
+	return; 
+    }
     puzzle_t *puzzle = puzzle_new();                     // Create empty puzzle and randomly fill in all the values 
     fill_puzzle(puzzle); 
 
     puzzle_t *fullpuzz = puzzle_new();                   // Store the completed puzzle for later
     puzzle_iterate(puzzle, fullpuzz, copy_puzzle); 
 
-    while (!hide_nums(puzzle, fullpuzz, minshown)) {           // Keep removing numbers while there's still only one solution
-        puzzle_iterate(fullpuzz, puzzle, copy_puzzle);   // and while we have <= 41 showing numbers
+    while (!hide_nums(puzzle, fullpuzz, minshown)) {     // Keep removing numbers while there's still only one solution
+        puzzle_iterate(fullpuzz, puzzle, copy_puzzle);   // and while we have too many numbers shown
     }
 
     puzzle_print(fp, puzzle);                            // Print finished puzzle to provided file (or stdout)
@@ -48,8 +52,6 @@ void create(FILE *fp, int minshown)
     puzzle_delete(puzzle);                               // Clean everything up from memory 
     puzzle_delete(fullpuzz);  
     fclose(fp);
-    
-
 }
 
 /********gen_random_num*********/
@@ -73,7 +75,7 @@ unsigned int gen_random_num(int min, int max)
  * Input: unit to return a random possible number from (if any)
  * Output: a random number from the unit's possibles
  */
-int get_random_possible(unit_t *unit)
+static int get_random_possible(unit_t *unit)
 {
     if ( unit == NULL ){
         fprintf(stderr, "Invalid unit passed in to get_random_possible\n");
@@ -97,7 +99,7 @@ int get_random_possible(unit_t *unit)
  *  Input: puzzle struct 
  *  Output: true if puzzle filled properly, false otherwise 
  */
-static bool fill_puzzle(puzzle_t *puzzle)
+bool fill_puzzle(puzzle_t *puzzle)
 {
     if ( puzzle == NULL ){  // check arguments
         fprintf(stderr, "Invalid puzzle passed in to fill_puzzle\n");
@@ -135,7 +137,7 @@ static bool fill_puzzle(puzzle_t *puzzle)
 /* copies all current (key, count) values into the given
 *  ctrs argument
 */
-static void copy_counters(void *arg, const int key, int count) 
+void copy_counters(void *arg, const int key, int count) 
 {
     if ( arg == NULL || count < 0 ){
         fprintf(stderr, "Invalid arguments for copy_counters\n");
@@ -176,7 +178,7 @@ void copy_puzzle(void *arg, unit_t* unit)
  *  Output: 
  *       * true if the puzzles match, false otherwise 
  */
-static bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz)
+bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz)
 {
     if ( puzzle == NULL || fullpuzz == NULL ){
         fprintf(stderr, "Invalid parameters for has_one_solution\n");
@@ -207,15 +209,15 @@ static bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz)
 /* Randomly removes one value from given puzzle
  * Returns the value of the removed unit
  */
-int remove_random_num(puzzle_t *puzzle, int *numshown)
+int remove_random_num(puzzle_t *puzzle, int *numshown, int *row, int *col)
 {
-    int row = gen_random_num(0,8);	    // get random row and column numbers
-    int col = gen_random_num(0,8);
-    int number = puzzle[row][col]->val;	    // store value to return
+    *row = gen_random_num(0,8);	    // get random row and column numbers
+    *col = gen_random_num(0,8);
+    int number = puzzle[*row][*col]->val;	    // store value to return
     if (number > 0) {
         *numshown -= 1;              	    // decrement number of shown units in the puzzle 
     }
-    puzzle[row][col]->val = 0;	       	    // remove value from puzzle
+    puzzle[*row][*col]->val = 0;	       	    // remove value from puzzle
     return number; 
 }
 
@@ -229,28 +231,29 @@ int remove_random_num(puzzle_t *puzzle, int *numshown)
  *  Output: 
  *      * true if enough numbers are hidden (at least 40), false otherwise 
  */
-static bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown)
+bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown)
 {
     int n = 81;						// total number of boxes
     int maxshown = minshown + 6; 			// because difficulty categories are intervals of 6
+    if (maxshown > 41) {maxshown = 41;}
     int row = 0;
     int col = 0;
     int number = 0;
 
     while (n >= maxshown) {				// remove numbers until we're at the max number to show
-	number = remove_random_num(puzzle, &n);
+	number = remove_random_num(puzzle, &n, &row, &col);
     } 
     							// then keep removing while there's still one solution,
 							// making sure to stay above minshown
-    while (has_one_solution(puzzle, fullpuzz) && n-1 >= minshown) { 
-        number = remove_random_num(puzzle, &n); 
+    while (n >= minshown && has_one_solution(puzzle, fullpuzz)) { 
+        number = remove_random_num(puzzle, &n, &row, &col); 
     }
 
     puzzle[row][col]->val = number;                     // Once its not solvable, add back the last number 
+    n++;
 
     if (n > 41 || n >= maxshown) {                      // Make sure we've removed enough numbers
-        return false;                                   // otherwise, we'll need to run hide_nums again
+	return false;                                   // otherwise, we'll need to run hide_nums again
     } 
-
     return true; 
 }

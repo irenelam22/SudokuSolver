@@ -6,10 +6,12 @@
 
 The specific data structures are defined in the sections below.
 
-`Sudoku` supports two features: generating a new 9x9 puzzle, or solving a given 9x9 puzzle. For the latter, the program takes in a puzzle-formatted file and prints to stdout the solution, if any.
+`Sudoku` supports two features: generating a new 9x9 puzzle, or solving a given 9x9 puzzle. For create, the program optionally takes difficulty level, otherwise defaulting to 'medium' difficulty, and randomly generates a sudoku puzzle. For the latter, the program takes in a puzzle-formatted file (or reads from stdin) and prints to stdout the solution, if any.
 
 ### create
-`Create` randomly generates an unfinished sudoku puzzle with at least 40 missing numbers. It first creates an empty puzzle, then recursively fills in each number, checking to make sure the rules of sudoku are held. Next, it randomly removes numbers from the puzzle, checking to make sure there's one unique solution. More specifically, it checks our best approximation of whether there is one solution, because it is impossible to guarantee that a given sudoku puzzle has only one solution, as described more in our pseudo-proof. Once enough numbers have been removed, create then prints the unfinished puzzle to either standard output, if the user didn't provide any parameters, or to the file name that the user provided. <br/>
+`Create` randomly generates an unfinished sudoku puzzle with at least 40 missing numbers. It also supports multiple difficulty levels, each with different ranges of numbers shown, as described in README.md. 
+
+It first creates an empty puzzle, then recursively fills in each number, checking to make sure the rules of sudoku are held. Next, it randomly removes numbers from the puzzle, checking to make sure there's one unique solution. More specifically, it checks our best approximation of whether there is one solution, because it is impossible to guarantee that a given sudoku puzzle has only one solution, as described more in our pseudo-proof. Once enough numbers have been removed, create then prints the unfinished puzzle to either standard output, if the user didn't provide any parameters, or to the file name that the user provided. <br/>
 `Create` uses a *unit* and *puzzle* data structure to keep track of the information within a given sudoku puzzle. Within *unit*, *possibles* is a *counters* data structure that stores the possible numbers that each unit can take. See the README.md for more information.  <br/>
 The `create` module implements the following methods: 
 (Please see pseudocode for pseudocode implementation.)
@@ -29,7 +31,7 @@ void create(char* file_name, int indicator);
 *  Input: puzzle struct 
 *  Output: true if puzzle filled properly, false otherwise 
 */
-static bool fill_puzzle(puzzle_t *puzzle);
+bool fill_puzzle(puzzle_t *puzzle);
 
 /******* hide_nums *******/
 /* Randomly selects units to remove from the given puzzle 
@@ -41,7 +43,17 @@ static bool fill_puzzle(puzzle_t *puzzle);
 * Output: 
 *     * true if enough numbers are hidden (at least 40), false otherwise 
 */
-static bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
+bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
+
+/****** remove_random_num*********/
+/* Randomly removes one unit from a given puzzle
+ * Inputs: 
+ *      * puzzle: current puzzle struct to remove from
+ *      * numshown: pointer to the current number of units shown in the puzzle
+ * Output: 
+ *      * value of the unit removed from the puzzle, in case it needs to get added back  
+ */
+remove_random_num(puzzle_t *puzzle, int *numshown);
 
 /******* has_one_solution *******/
 /* Our best estimate of testing to see if a puzzle has one unique solution
@@ -57,26 +69,26 @@ static bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
 * Output: 
 *      * true if the puzzles match, false otherwise 
 */
-static bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz);
+bool has_one_solution(puzzle_t *puzzle, puzzle_t *fullpuzz);
 
 /******* copy_puzzle *******/
 /* Helper function for puzzle_iterate that copies all data values for one 
 *  puzzle into another
 */
-static void copy_puzzle(void *arg, unit_t* unit);
+void copy_puzzle(void *arg, unit_t* unit);
 ```
 
 ### Pseudo code for create
 The `create.c` implementation runs as follows: 
-1. Execute from a command line with the usage syntax `./sudoku create FILE_NAME`
-2. Validate arguments: 
-	* Ensure `indicator` is either 0 or 1
-   * If indicator=0, ensure `FILE_NAME` is a writable file, and open the file pointer
+1. Execute from a command line with the usage syntax `./sudoku create [difficultyLevel]`
+2. Validate arguments:
+   * File pointer must be valid
+   * Minimum numbers to show must be greater than 0, less than 41 
 3. Create an empty puzzle 
 4. Fill the puzzle randomly, using recursion
    * Same process as the pseudocode described below in Solve under #4, except *fill_puzzle* gets random numbers from the possibles list
 5. Store the full puzzle in another puzzle struct, for later comparison with *has_one_solution*
-6. Hide numbers in the puzzle randomly one by one, comparing the current puzzle's solution to the complete puzzle to ensure there's only one unique solution 
+6. Hide numbers in the puzzle randomly one by one, comparing the current puzzle's solution to the complete puzzle to ensure there's only one unique solution, and staying within the number of shown numbers as indicated by difficulty level (described in README.md) 
 	* If hide_nums returns false, i.e. not enough numbers were hidden, then copy the full puzzle into the current puzzle and re-run hide_nums
 7. Print the puzzle to the given file, or if none given, to standard output
 8. Clean up memory
@@ -186,7 +198,7 @@ The `solve.c` implementation runs as follows (using C):
 
 ### Testing plan
 
-To test the output of `create.c` and `solve.c`, we run several hard-coded examples as welll as `fuzzquery` inputs and manually check the outputs. Both modules have their respective unit tests, as well as an integration test to test the program's functionality as a whole.
+To test the output of `create.c` and `solve.c`, we run several hard-coded examples as well as `FuzzTest` inputs and manually check the outputs. Both modules have their respective unit tests, as well as an integration test to test the program's functionality as a whole.
 
 In particular, we check that `create` will create as close to a unique puzzle as possible (please see README and extended pseudo-proof for why we cannot guarantee uniqueness). 
 

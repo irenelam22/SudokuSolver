@@ -40,10 +40,11 @@ bool hide_nums(puzzle_t *puzzle, puzzle_t *fullpuzz, int minshown);
  * Inputs: 
  * 	* puzzle: current puzzle struct to remove from
  * 	* numshown: pointer to the current number of units shown in the puzzle
+ * 	* row, col: pointers to where we are removing from in the puzzle
  * Output: 
  * 	* value of the unit removed from the puzzle, in case it needs to get added back  
  */
-int remove_random_num(puzzle_t *puzzle, int *numshown);
+int remove_random_num(puzzle_t *puzzle, int *numshown, int* row, int* col);
 
 /******* has_one_solution *******/
 /* Our best estimate of testing to see if a puzzle has one unique solution
