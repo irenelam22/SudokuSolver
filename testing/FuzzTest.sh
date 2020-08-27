@@ -19,4 +19,6 @@ do
     ../sudoku/sudoku solve testing.txt >> fuzz.out
 done
 
+rm -rf testing.txt
+
 echo "Fuzz Test Done: Please look at fuzz.out for solutions"
