@@ -200,8 +200,11 @@ The `solve.c` implementation runs as follows (using C):
 
 To test the output of `create.c` and `solve.c`, we run several hard-coded examples as well as `FuzzTest` inputs and manually check the outputs. Both modules have their respective unit tests, as well as an integration test to test the program's functionality as a whole.
 
-In particular, we check that `create` will create as close to a unique puzzle as possible (please see README and extended pseudo-proof for why we cannot guarantee uniqueness). 
+In particular, we check that `create` will create as close to a unique puzzle as possible (please see README and extended pseudo-proof for how we guarantee uniqueness but we ran out of time to implement). 
 
 Similarly, we check that `solve` will correctly solve a puzzle with a known solution. We also use various `fuzzquery` tests with known sudoku puzzle solutions and invalid inputs to ensure robustness. For example, we test `solve` on puzzles with different amounts of units filled in to test the accuracy of backtracing/the recursive process. 
+
+Lastly we have a 'testing.sh' shell script that will make clean make and then run both of the tests previously mentioned to increase the efficiency of running test cases. 
+
 
 Please see `DESIGN.md` for more testing specific examples.

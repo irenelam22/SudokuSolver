@@ -164,13 +164,16 @@ To compile, simply `make`.
 
 ### Testing
 
-The `testing.sh` script ?????
+For our testing our stragedy was centered around trying run as many cases as we possibly could and see how our code reacted. We made the test cases quite robust in order to accruately gauge our code's efficiency. There are three files to look at. 
+1. FuzzTest.sh which is a shell script that intakes one input from the user which is the number of tests to generate. This script will call the create function save the output to a file that is then passed into the solve function which will solve it and then return the solved sudoku to a different file called fuzz.out
+2. Unit Testing- Our Unit Testing is all done in one shell script that calls the solve function and checks to see if it is properly working and generating valid sudokus. we check this by passing the sudokus to the solver and seeing if any errors arise. We also test solver directly by passing it invlaid sudokus of various types from incorrect formatting to incorrect numbers and even blank sudokus. Then we pass valid sudokus and compare the results to the right answer to make sure it is correct.
+3. Testing.sh just runs make and make clean and then runs both of the tests previously mentioned. 
 
 ### Extra Credit
 
 Our program showcases three additional features on top of the base guidelines for this assignment.
 
-1. A mathematical proof for how, according to Group Theory, there is a possible way we could guarantee uniqueness for sudoku puzzles, although we did not implement this. Please see the `Proof_Sudoku_Solutions.pdf` document for more details regarding this proof.
+1. A mathematical proof for how, according to Group Theory, there is a possible way we could guarantee uniqueness for sudoku puzzles, although we did not implement this, due to time constraints. Please see the `Proof_Sudoku_Solutions.pdf` document for more details regarding this proof.
 
 2. Options to choose difficulty level, 'easy', 'medium', or 'hard', as discussed above
 
