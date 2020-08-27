@@ -218,6 +218,7 @@ void first_valid_unit(void* ptr, unit_t* current_cell)
         unit -> row_num = current_cell -> row_num;
         unit -> col_num = current_cell -> col_num;
         unit -> box_num = current_cell -> box_num;
+        unit -> is_original = current_cell -> is_original;
         unit -> possibles = current_cell -> possibles;
     }
 }

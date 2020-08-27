@@ -5,9 +5,9 @@
 
 PROG = interface 
 OBJS = interface.o 
-LIBS = ../common/common.a ../libcs50/libcs50.a 
+LIBS = ../common/common.a ../libcs50/libcs50.a ../solve/solve.o
 
-CFLAGS = -Wall -pedantic -std=c11 -ggdb -l ncurses $(TESTING) -I../common -I../libcs50  
+CFLAGS = -Wall -pedantic -std=c11 -ggdb -l ncurses $(TESTING) -I../common -I../libcs50  -I../solve
 CC = gcc 
 MAKE = make
 
