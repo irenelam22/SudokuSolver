@@ -138,3 +138,13 @@ The `testing.sh` script tests `querier` on numerous files for errors and edge ca
 To test, simply `make` then `make test`.
 
 Please find results in `testing.out`.
+
+### Extra Credit
+
+Our program showcases two additional features on top of the base guidelines for this assignment.
+
+1. A mathematical proof for why, according to Group Theory, we cannot assume uniqueness for sudoku puzzles. Please see the `Proof_Sudoku_Solutions.pdf` document for more details regarding this proof.
+
+2. A terminal interactive interface using the `ncurses` library. In particular, the program allows the user to manually insert numbers into the puzzle and use the WASD/arrow keys to navigate throughout the puzzle to see the different units' possibles list. This comes supported with color to distinguish between units that can be changed, and those part of the original puzzle that cannot be edited. 
+
+Please find more details in the `ncurses README`. To keep our code organized, we have also decided to have a separate driver file for that program. To that end, you will need to separately navigate to the `ncurses` repository in order to make and test the program.

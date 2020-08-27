@@ -13,6 +13,7 @@ group: project-kidd
 #include <string.h>
 #include "./unit.h"
 #include "../libcs50/counters.h"
+#include "../libcs50/memory.h"
 
 // local function prototypes
 static int generate_row_num(int unit_num);
@@ -38,6 +39,7 @@ unit_t* unit_new(int unit_num, int val){
     unit_t* unit = malloc(sizeof(unit_t));                // allocate memory for and instantiate our unit
     unit->val = val;
     unit->unit_num = unit_num;
+    unit -> is_original = (val != 0);
 
     int row = generate_row_num(unit_num);                // generate the unit's row number
     if ( row == -1){                                     // exit if error
@@ -304,15 +306,38 @@ bool possibles_contain(unit_t* unit, int val)
 
 /******* possibles_isEmpty_helper ********/
 /*
- * Helper function for counters_iterate in possibles_isEmpty. Note: a count of 1 in a possibles list indicates that
+ * Helper function for counters_iterate in possibles_isEmpty. 
+ * Note: a count of 1 in a possibles list indicates that
  * this value is a possible value. A count of 0 indicates that this value is not possible.
 */
-void possibles_isEmpty_helper(void *arg, const int key, const int count){
+void possibles_isEmpty_helper(void *arg, const int key, const int count)
+{
     int* ptr = arg;
     if (ptr != NULL && count != 0) {                    // if the count in the possibles counter is not zero,
        *ptr = key;                                      // assign this value to our temp pointer (see below)
     }
 }
+
+void possibles_print_helper(void *arg, const int key, const int count)
+{
+    char* possibles_string = arg;
+    if (count != 0) {
+        char* num = assertp(malloc(sizeof(key)+1), "possibles print failed");
+        sprintf(num, " %d", key);
+        strcat(possibles_string, num);
+        free(num);
+    }
+}
+
+char* possibles_print_ncurses(unit_t* unit)
+{
+    char* string = assertp(malloc(35), "Possibles print malloc failed");
+    strcpy(string, "Possibles: [");
+    counters_iterate(unit->possibles, string, possibles_print_helper);
+    strcat(string, " ]\n");
+    return string;
+}
+
 
 /*******possibles_isEmpty********/
 /* Checks whether the unit's possibles list is empty
