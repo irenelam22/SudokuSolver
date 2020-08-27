@@ -91,20 +91,18 @@ void clean_incomplete_puzzle(puzzle_t *puzzle, int row, int col, int unit_num)
 {
     for (int i = 0; i < row; i++) {
         // free all units
-	        for (int j = 0; j < MAX_COL; j++) {
-	            delete_unit(puzzle[i][j]); 
-	        }
-	        free(puzzle[i]);
+        for (int j = 0; j < MAX_COL; j++) {
+            delete_unit(puzzle[i][j]); 
+        }
+        free(puzzle[i]);
     }
     
 	for (int j = 0; j < col; j++) {
-	            delete_unit(puzzle[row][j]); 
-	    }
-    
+        delete_unit(puzzle[row][j]); 
+    }
+    free(puzzle[row]);
     free(puzzle); 
 }
-
-// if ( unit_num % 9 == 0) 
 
 /**********puzzle_load*************/
 /* Takes a pointer to a file that contains a properly formatted
@@ -129,7 +127,12 @@ puzzle_t *puzzle_load(FILE *fp)
             continue;
         }
         // Otherwise, allocate memory for the row and process the line
-        puzzle[row] = assertp(malloc(MAX_COL*UNIT_SIZE), "puzzle load malloc failed");
+        puzzle[row] = malloc(MAX_COL*UNIT_SIZE);
+        if (puzzle[row] == NULL) {
+            fprintf(stderr, "Error loading file\n");
+            free(line);
+            return NULL;
+        }
         for (int i = 0; i < strlen(line); i++) {
             // If character is a digit
             if (isdigit(line[i])) {
