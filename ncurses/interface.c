@@ -1,3 +1,8 @@
+/*
+ * interface.c -- EXTRA CREDIT terminal interaction
+ *
+ * Dartmouth CS50, Summer 2020
+ */
 #include <curses.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -75,14 +80,40 @@ void pprint(puzzle_t *puzzle, unit_t* current_unit)
     print_help();
 }
 
+void splash_screen()
+{
+    attron(COLOR_PAIR(PARENTHESES_PAIR));
+    mvaddstr(1, 3, "                                       /$$           /$$                             ");
+    mvaddstr(2, 3, "                                      | $$          | $$                             ");
+    mvaddstr(3, 3, "              /$$$$$$$ /$$   /$$  /$$$$$$$  /$$$$$$ | $$   /$$ /$$   /$$             ");
+    mvaddstr(4, 3, "             /$$_____/| $$  | $$ /$$__  $$ /$$__  $$| $$  /$$/| $$  | $$             ");
+    mvaddstr(5, 3, "            |  $$$$$$ | $$  | $$| $$  | $$| $$  \\ $$| $$$$$$/ | $$  | $$             ");
+    mvaddstr(6, 3, "             \\____  $$| $$  | $$| $$  | $$| $$  | $$| $$_  $$ | $$  | $$             ");
+    mvaddstr(7, 3, "             /$$$$$$$/|  $$$$$$/|  $$$$$$$|  $$$$$$/| $$ \\  $$|  $$$$$$/             ");
+    mvaddstr(8, 3, "            |_______/  \\______/  \\_______/ \\______/ |__/  \\__/ \\______/              ");
+
+    mvaddstr(10, 3, " /$$$$$$$$                                      /$$   /$$ /$$$$$$ /$$$$$$$  /$$$$$$$ ");
+    mvaddstr(11, 3, "|__  $$__/                                     | $$  /$$/|_  $$_/| $$__  $$| $$__  $$");
+    mvaddstr(12, 3, "   | $$  /$$$$$$   /$$$$$$  /$$$$$$/$$$$       | $$ /$$/   | $$  | $$  \\ $$| $$  \\ $$");
+    mvaddstr(13, 3, "   | $$ /$$__  $$ |____  $$| $$_  $$_  $$      | $$$$$/    | $$  | $$  | $$| $$  | $$");
+    mvaddstr(14, 3, "   | $$| $$$$$$$$  /$$$$$$$| $$ \\ $$ \\ $$      | $$  $$    | $$  | $$  | $$| $$  | $$");
+    mvaddstr(15, 3, "   | $$| $$_____/ /$$__  $$| $$ | $$ | $$      | $$\\  $$   | $$  | $$  | $$| $$  | $$");
+    mvaddstr(16, 3, "   | $$|  $$$$$$$|  $$$$$$$| $$ | $$ | $$      | $$ \\  $$ /$$$$$$| $$$$$$$/| $$$$$$$/");
+    mvaddstr(17, 3, "   |__/ \\_______/ \\_______/|__/ |__/ |__/      |__/  \\__/|______/|_______/ |_______/ ");
+
+    mvaddstr(LINES - 2, COLS - 40, "ASCII art created using patorjk.com");
+    mvaddstr(LINES - 1, COLS - 40, "Press any character to continue...");
+    attroff(COLOR_PAIR(PARENTHESES_PAIR));
+    getch();
+    clear();
+}
+
 int main(void)
 {
     char* filename = "../puzzlefiles/easy.txt";
     FILE* puzzle_file = fopen(filename, "r");
     puzzle_t* puzzle = puzzle_load(puzzle_file);
-    // puzzle_print(stdout, puzzle);
 
-    // sleep(1);
     initscr();
     cbreak();
     noecho();
@@ -93,6 +124,8 @@ int main(void)
     init_pair(NEW_PAIR, COLOR_YELLOW, COLOR_BLACK);
     init_pair(PARENTHESES_PAIR, COLOR_MAGENTA, COLOR_BLACK);
 
+    splash_screen();
+
     // keypad Support 
     keypad(stdscr, TRUE);
     unit_t* start = next_unit(puzzle);
@@ -102,12 +135,12 @@ int main(void)
 
     int count = 0;
     while (true) {
-        clear();
         pprint(puzzle, ptr);
         refresh();
         int ch = getch();
         int row = ptr -> row_num;
         int col = ptr -> col_num;
+        clear();
 
         // User mouse movement
         switch(ch) {
@@ -130,7 +163,7 @@ int main(void)
             case 'f':
                 start = next_unit(puzzle);
                 if (start == NULL) {
-                    mvaddstr(13, 2, "There is no next in this puzzle!");
+                    mvaddstr(LINES - 2, 2, "There is no next in this puzzle!");
                 } else {
                     ptr = puzzle_get_unit(puzzle, start -> row_num, start -> col_num);
                     start -> possibles = NULL;
@@ -138,7 +171,6 @@ int main(void)
                 }
                 break;
             case '0':
-            // case 'd':
                 if (!(ptr -> is_original)) {
                     ptr -> val = 0;
                 }
@@ -166,18 +198,17 @@ int main(void)
             default:
                 break;
         }
-        // if (is_puzzle_solveable(puzzle)) {
-        //     mvaddstr(5, 30, "Congratulations! You've solved the puzzle!");
+
+        // if (valid_sudoku(puzzle, 9)) {
+        //     mvaddstr(LINES - 1, 2, "Congratulations! You've solved the puzzle!");
         //     break;
+        // } else {
+        //     mvaddstr(LINES - 1, 2, "Uh oh! Puzzle not solved");
         // }
 
         // Quit
         if(ch == 'q') {
-            mvaddstr(12, 1, "q=quit");
             break;
-        } 
-        else {
-            printw("Press Left arrow or infinite loop %d - %c", ++count, ch);
         }
     }
 
