@@ -160,3 +160,15 @@ To compile, simply `make`.
 ### Testing
 
 The `testing.sh` script ?????
+
+### Extra Credit
+
+Our program showcases three additional features on top of the base guidelines for this assignment.
+
+1. A mathematical proof for how, according to Group Theory, there is a possible way we could guarantee uniqueness for sudoku puzzles, although we did not implement this. Please see the `Proof_Sudoku_Solutions.pdf` document for more details regarding this proof.
+
+2. Options to choose difficulty level, 'easy', 'medium', or 'hard', as discussed above
+
+3. A terminal interactive interface using the `ncurses` library. In particular, the program allows the user to manually insert numbers into the puzzle and use the WASD/arrow keys to navigate throughout the puzzle to see the different units' possibles list. This comes supported with color to distinguish between units that can be changed, and those part of the original puzzle that cannot be edited. 
+
+Please find more details in the `ncurses README`. To keep our code organized, we have also decided to have a separate driver file for that program. To that end, you will need to separately navigate to the `ncurses` repository in order to make and test the program.
