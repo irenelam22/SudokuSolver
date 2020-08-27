@@ -343,11 +343,17 @@ bool is_puzzle_solveable(puzzle_t* puzzle)
     return solveable;
 }
 
+/******* valid_populate_helper ********/
+/* Populates every counters set with the values in its respective row/col/box
+ * Iterative function used in is_puzzle_finished
+ * Inputs: arr_three struct, unit for iterating
+ * Output: none (directly modifies arr_three)
+ */
 void valid_populate_helper(void *arg, unit_t* cell)
 {
-    // fprintf(stderr, "Check row %d col %d\n", cell->row_num, cell->col_num);
     struct arr_three* checker = arg;
 
+    // Error handling
     if (checker == NULL || cell == NULL ) {
         return;
     }
@@ -358,20 +364,32 @@ void valid_populate_helper(void *arg, unit_t* cell)
         checker->check = false;
         return;
     }
+    // Populate each counters array set in their respective values
     counters_add(checker->row_arr[cell->row_num], cell->val);
     counters_add(checker->col_arr[cell->col_num], cell->val);
     counters_add(checker->box_arr[cell->box_num], cell->val);
 }
 
+/******* valid_check_helper ********/
+/* Checks whether each counters set has one and only one count for each number
+ * from 1 through 9
+ * Iterative function used in is_puzzle_finished
+ * Inputs: arr_three struct containing all of the counters sets, unit to iterate
+ * Output: none (directly modifies arr_three struct)
+ */
 void valid_check_helper(void *arg, unit_t* cell)
 {
     struct arr_three* checker = arg;
+
+    // Error-handling
     if (checker == NULL || cell == NULL ) {
         return;
     }
     if (!(checker->check)) {
         return;
     }
+
+    // Iterate through each counters set's value and ensure the count is 1
     for (int i = 0; i < 9; i++) {
         if (!(checker -> check)) {
             break;
@@ -390,29 +408,43 @@ void valid_check_helper(void *arg, unit_t* cell)
     }
 }
 
+/******* is_puzzle_finished ********/
+/* Checks whether a puzzle is finished (e.g. all units are populated correctly)
+ * Inputs: puzzle
+ * Output: true if finished, false otherwise
+ */
 bool is_puzzle_finished(puzzle_t* puzzle)
 {
-    // fprintf(stderr,"Failed\n");
+    // Instantiate our struct of row/col/box counters set arrays
     struct arr_three collections  = {
         .row_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
         .col_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
         .box_arr = assertp(calloc(9, 9), "puzzle valid calloc failed"),
         .check = true,
     };
+
+    // Initialize all counters sets
     for (int i = 0; i < 9; i++) {
         collections.row_arr[i] = counters_new();
         collections.col_arr[i] = counters_new();
         collections.box_arr[i] = counters_new();
     }
     
+    // Call the item functions to test that the puzzle is finished
     puzzle_iterate(puzzle, &collections, valid_populate_helper);
-    // if (collections.check) {
-    //     puzzle_iterate(puzzle, &collections, valid_check_helper);
-    // }
+    if (collections.check) {
+        puzzle_iterate(puzzle, &collections, valid_check_helper);
+    }
+
+    // Clean up
     for (int i = 0; i < 9; i++) {
         counters_delete(collections.row_arr[i]);
         counters_delete(collections.col_arr[i]);
         counters_delete(collections.box_arr[i]);
     }
+
+    free(collections.row_arr);
+    free(collections.col_arr);
+    free(collections.box_arr);
     return collections.check;
 }
