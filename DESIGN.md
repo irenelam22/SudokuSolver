@@ -15,7 +15,7 @@ Our program will have two options: create and solve
 * The create option will run as follows:
 
 ```c
-./sudoku create [FILE_NAME]
+./sudoku create [OPTIONAL: DIFFICULTY LEVEL]
 ```
 Where file name is the file to which we will output our puzzle. If no puzzle name is given, we will output the puzzle to
 standard output.
@@ -24,7 +24,7 @@ standard output.
 * The solve option will run as follows:
 
 ```c
-./sudoku solve [PUZZLE_FILE_NAME]
+./sudoku solve [OPTIONAL: PUZZLE_FILE_NAME]
 ```
 Where `PUZZLE_FILE_NAME` refers to a puzzle-formatted file to be solved.
  
@@ -32,17 +32,22 @@ For example
 ```
 ./sudoku solve easy.txt
 ```
+or 
+
+```
+./sudoku solve < easy.txt
+```
+
  
 ### Inputs and outputs
  
 #### Create
 Inputs:
-* The user has the option to input a writable file to which their puzzle will be stored.</br>
+* The user has the option to select a difficulty level which will determine the number of values showed</br>
 
 Outputs:
-* If the user does not provide a valid writable file name, output an error message
-* If the user does not provide a file name, we will output to standard output
-* If the user provides a file name, we will output our puzzle to the provided file
+* If the user does not provide a difficulty level of "easy," "medium," or "hard," output an error message
+* We will output the puzzle to standard output
 * Puzzle format:
 ```
    0 0 0 | 0 0 0 | 0 0 0
@@ -60,10 +65,10 @@ Outputs:
  
 #### Solve
 Inputs:
-* Puzzle file name: this file must be readable and formatted as a puzzle (see above)
+* (Optional) Puzzle file name: this file must be readable and formatted as a puzzle (see above)
  
 Outputs: 
-* Error message if missing or invalid arguments
+* Error message if invalid arguments
 * Otherwise, the completed puzzle is printed to stdout (see the format above)
  
 Note: We load the `PUZZLE_FILE_NAME` into a puzzle data structure. In the basic sudoku puzzle, each puzzle is a 9 by 9 grid of `unit` data structures. Solve then iterates through the structure and recursively fills in numbers from 1-9 based on the rules of sudoku, backtracing to a previous unit when necessary.
@@ -112,7 +117,7 @@ V     0 0 0 | 0 0 0 | 0 0 0
 * Methods: 
 	* *puzzle_new*: creates new empty puzzle, where the value of each unit is 0
 	* *puzzle_print*: prints a given puzzle struct to a given file pointer 
-	* *puzzle_load*: loads in a puzzle struct from a given file pointer, where the file contains a properly formatted sudoku 
+	* *puzzle_load*: loads in a puzzle struct from a given file pointer; returns NULL if file is not properly formatted 
 	* *puzzle_get_unit*: returns the unit in a given row and column number in a puzzle
 	* *puzzle_iterate*: allows the user to call a given itemfunc using a given arg on every unit in a puzzle 
 	* *puzzle_delete*: frees all allocated memory for a given puzzle
@@ -177,9 +182,9 @@ And solve will also rely on *unit*, *puzzle*, and *counterset*, as described abo
  
 ### Create
 The create portion of Sudoku will run as follows: 
-1. Execute from a command line with the usage syntax `./sudoku create FILE_NAME`
+1. Execute from a command line with the usage syntax `./sudoku create [OPTIONAL: DIFFICULTY LEVEL]`
 2. Validate its command-line arguments: 
-   * Ensure `FILE_NAME` is a writable file
+   * If a difficulty level is provided, make sure it is "easy," "medium," or "hard"
 3. Create an empty puzzle 
 4. Fill the puzzle randomly, using recursion
    * Same process as the pseudocode described below in Solve under #4, except *fill_puzzle* gets random numbers from the possibles list
@@ -191,7 +196,7 @@ The create portion of Sudoku will run as follows:
 ### Solve
 The solve portion of Sudoku will run as follows:
  
-1. Execute from a command line with usage syntax `./sudoku solve PUZZLE_FILE_NAME`
+1. Execute from a command line with usage syntax `./sudoku solve [OPTIONAL: PUZZLE_FILE_NAME]`
 2. Validate its command-line arguments:
    1. Ensure `PUZZLE_FILE_NAME` is the pathname for an existing readable file, formatted as a puzzle
 3. Load the index from `PUZZLE_FILE_NAME` into an internal puzzle data structure.
