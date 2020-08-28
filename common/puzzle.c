@@ -88,9 +88,10 @@ void puzzle_print(FILE *fp, puzzle_t *puzzle)
 }
 
 /**********puzzle_load*************/
-/* Takes a pointer to a file that contains a properly formatted
+/* Takes a pointer to a file that contains a 
 *  sudoku, then loads that sudoku into a new puzzle struct, 
 *  with the proper values for each unit
+* (returning NULL if improperly formatted)
 */
 puzzle_t *puzzle_load(FILE *fp)
 {
