@@ -128,6 +128,8 @@ Additionally, we assumed that it is largely not possible to determine a unique s
 
 Based on a previous discussion with Professor Zhou, we assumed it would be okay to keep the puzzle unit test within the common directory as opposed to the testing directory as it actively tests methods within puzzle (in common).
 
+We assume that all methods that do not deal with user input are run internally and therefore do not require rigorous input checks (e.g. item func methods called by another method).
+
 ### Pseudo-proof of uniqueness
 
 In `Proof_Sudoku_Solutions.pdf`, we show an example of how one could implement a sudoku algorithm that guarantees uniqueness for created puzzles using Group Theory. However, in general, this is a NP-hard problem where uniqueness is guaranteed only in defined circumstances based on automorphic and symmetric grouping. As such, our sudoku creation algorithm attempts to generate a close to a unique puzzle as possible (this accuracy will deviate based on the difficult levels).  
