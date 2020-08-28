@@ -109,18 +109,8 @@ puzzle_t *puzzle_load(FILE *fp)
             free(line); 
             continue;
         }
-<<<<<<< HEAD
 
         // Otherwise, process the line
-=======
-        // Otherwise, allocate memory for the row and process the line
-        puzzle[row] = malloc(MAX_COL*UNIT_SIZE);
-        if (puzzle[row] == NULL) {
-            fprintf(stderr, "Error loading file\n");
-            free(line);
-            return NULL;
-        }
->>>>>>> 3a445f4fa897e56d8f13f41e7f0f3757db8fa13d
         for (int i = 0; i < strlen(line); i++) {
             // If character is a digit
             if (isdigit(line[i])) {
