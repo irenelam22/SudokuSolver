@@ -97,10 +97,10 @@ void pprint(puzzle_t *puzzle, unit_t* current_unit)
 
     // Checking whether the puzzle is finished and printing corresponding congratulations
     if (is_puzzle_finished(puzzle)) {
-            attron(COLOR_PAIR(NEW_PAIR));
-            mvaddstr(LINES - 1, 2, "CONGRATULATIONS! You've solved the puzzle! (Press q to quit)");
-            attroff(COLOR_PAIR(NEW_PAIR));
-        } 
+        attron(COLOR_PAIR(NEW_PAIR));
+        mvaddstr(LINES - 1, 2, "CONGRATULATIONS! You've solved the puzzle! (Press q to quit)");
+        attroff(COLOR_PAIR(NEW_PAIR));
+    }
 }
 
 /******* splash_screen ********/
@@ -139,31 +139,22 @@ void splash_screen()
 /**
  * validates the inputs for the main
  * Inputs: number of inputs, filename of puzzle
- * Output: true is success, false otherwise
+ * Output: puzzle on success, NULL otherwise
  */
-bool validate_inputs(int num_inputs, char* filename)
+puzzle_t* validate_inputs(int num_inputs, char* filename)
 {
-    if (num_inputs > 2) {
-        fprintf(stderr, "Too many inputs: Please only pass one puzzle-generated file\n");
-        return false;
-    }
-    if (num_inputs < 2) {
-        fprintf(stderr, "Usage: ./interface puzzle-formatted-file\n");
-        return false;
-    }
     FILE* puzzle_file = fopen(filename, "r");
     if (puzzle_file == NULL) {
         fprintf(stderr, "Puzzle file passed to interface is either not readable or does not exist\n");
-        return false;
+        return NULL;
     }
     puzzle_t* puzzle = puzzle_load(puzzle_file);
+    fclose(puzzle_file);
     if (puzzle == NULL) {
         fprintf(stderr, "Please pass a valid, puzzle-formatted file\n");
-        fclose(puzzle_file);
-        return false;
+        return NULL;
     }
-    fclose(puzzle_file);
-    return true;
+    return puzzle;
 }
 
 /******* main ********/
@@ -174,11 +165,15 @@ bool validate_inputs(int num_inputs, char* filename)
  */
 int main(const int argc, char *argv[])
 {
-    // Read the file
-    char* filename = "../puzzlefiles/easy.txt";
-    FILE* puzzle_file = fopen(filename, "r");
-    puzzle_t* puzzle = puzzle_load(puzzle_file);
-    fclose(puzzle_file);
+    if (argc != 2) {
+        fprintf(stderr, "Usage: ./interface puzzle-formatted-file\n");
+        return 1;
+    }
+    puzzle_t* puzzle = validate_inputs(argc, argv[1]);
+    if (puzzle == NULL) {
+        fprintf(stderr, "Please give a valid puzzle-formatted file\n");
+        return 1;
+    }
 
     // Initialize ncurses library
     initscr();
@@ -197,10 +192,16 @@ int main(const int argc, char *argv[])
     keypad(stdscr, TRUE);
 
     // Find the next unit and initialize
+    unit_t* ptr = NULL;
     unit_t* start = next_unit(puzzle);
-    start -> possibles = NULL;
-    unit_t* ptr = puzzle_get_unit(puzzle, start -> row_num, start -> col_num);
-    delete_unit(start);
+    if (start == NULL) {
+        ptr = puzzle_get_unit(puzzle, 0, 0);
+        mvaddstr(16, 1, "Seems like the puzzle is already completed! (Press q to quit)");
+    } else {
+        ptr = puzzle_get_unit(puzzle, start -> row_num, start -> col_num);
+        start -> possibles = NULL;
+        delete_unit(start);
+    }
 
     // Run the program
     while (true) {
