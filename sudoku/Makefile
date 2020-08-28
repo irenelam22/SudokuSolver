@@ -27,6 +27,7 @@ $(PROG): $(OBJS) $(LIBS)
 # test:
 # 	$(CC) -c $(CFLAGS) $<
 
+
 clean:
 	rm -rf *.dSYM  # MacOS debugger info
 	rm -f *~ *.o

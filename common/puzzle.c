@@ -87,21 +87,25 @@ void puzzle_print(FILE *fp, puzzle_t *puzzle)
     }
 }
 
+/********clean_incomplete_puzzle*********/
+/* Given the row, column, and unit_num of the last instantiated unit,
+ * free all the previous units and rows, and then free the puzzle itself
+ * Used in puzzle_load when an invalid format is detected
+ */
 void clean_incomplete_puzzle(puzzle_t *puzzle, int row, int col, int unit_num)
 {
-    for (int i = 0; i < row; i++) {
-        // free all units
-        for (int j = 0; j < MAX_COL; j++) {
-            delete_unit(puzzle[i][j]); 
-        }
-        free(puzzle[i]);
+    for (int i = 0; i < row; i++) {			// clean up all prior rows
+	    for (int j = 0; j < MAX_COL; j++) {
+		    delete_unit(puzzle[i][j]); 
+	    }
+	    free(puzzle[i]);
     }
-    
-	for (int j = 0; j < col; j++) {
-        delete_unit(puzzle[row][j]); 
+    for (int j = 0; j < col; j++) { 			// clean up current row
+	    delete_unit(puzzle[row][j]); 
     }
     free(puzzle[row]);
-    free(puzzle); 
+    
+    free(puzzle); 					// free entire puzzle
 }
 
 /**********puzzle_load*************/

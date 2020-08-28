@@ -5,8 +5,8 @@ Team KIDD - Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
 Dartmouth CS50, Summer 2020
 */
 
-#include "../common/puzzle.h"
-#include "../common/unit.h"
+#include "puzzle.h"
+#include "unit.h"
 #include "../libcs50/memory.h"
 
 /******* next_unit_test ********/

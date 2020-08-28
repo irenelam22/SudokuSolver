@@ -188,9 +188,11 @@ The create portion of Sudoku will run as follows:
 4. Fill the puzzle randomly, using recursion
    * Same process as the pseudocode described below in Solve under #4, except *fill_puzzle* gets random numbers from the possibles list
 5. Store the full puzzle in another puzzle struct, for later comparison with *has_one_solution*
-6. Hide numbers in the puzzle randomly one by one, comparing the current puzzle's solution to the complete puzzle to ensure there's only one unique solution 
-7. Print the puzzle to the given file, or if none given, to standard output
-8. Clean up memory 
+6. Hide numbers in the puzzle randomly one by one until we reach the max numbers to be shown
+7. Next, remove numbers while there's still our best estimate of one unique solution, and while above the min numbers to be shown
+8. Once we're done removing numbers, check if we are still within the correct interval of numbers to show -- if not, go back to the full puzzle and repeat the removing numbers process until we have a good puzzle
+9. Print the puzzle to the given file, or if none given, to standard output
+10. Clean up memory 
  
 ### Solve
 The solve portion of Sudoku will run as follows:
