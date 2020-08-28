@@ -131,7 +131,12 @@ puzzle_t *puzzle_load(FILE *fp)
             continue;
         }
         // Otherwise, allocate memory for the row and process the line
-        puzzle[row] = assertp(malloc(MAX_COL*UNIT_SIZE), "puzzle load malloc failed");
+        puzzle[row] = malloc(MAX_COL*UNIT_SIZE);
+        if (puzzle[row] == NULL) {
+            fprintf(stderr, "Error loading file\n");
+            free(line);
+            return NULL;
+        }
         for (int i = 0; i < strlen(line); i++) {
             // If character is a digit
             if (isdigit(line[i])) {

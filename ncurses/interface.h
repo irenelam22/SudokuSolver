@@ -35,6 +35,13 @@ void pprint(puzzle_t *puzzle, unit_t* current_unit);
  */
 void splash_screen();
 
+/**
+ * validates the inputs for the main
+ * Inputs: number of inputs, filename of puzzle
+ * Output: puzzle on success, NULL otherwise
+ */
+puzzle_t* validate_inputs(int num_inputs, char* filename);
+
 /******* main ********/
 /** Main method to run the program
  * Manages the user's actions on the puzzle 
