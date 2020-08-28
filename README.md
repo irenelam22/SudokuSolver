@@ -6,7 +6,7 @@
 Our project supports two features: generating a new 9x9 puzzle, or solving a given 9x9 puzzle. For the latter, the program takes in a puzzle-formatted file and prints to stdout the solution, if any. It also allows you to specify difficulty level: easy, medium, or hard, where the number of shown boxes for each difficulty level are: 
 * Easy: 39-41
 * Medium: 33-38
-* Hard: 27-32 (**note**: sudoku can take a while longer to create a 'hard' puzzle)
+* Hard: 27-32 (**note**: sudoku can take a while longer to create a 'hard' puzzle) <br/>
 When no difficulty level is provided, sudoku defaults to the 'medium' difficulty. 
 
 Rules of sudoku: 
@@ -28,6 +28,8 @@ Additionally, our sudoku is formatted like so:
 0 0 0 | 0 0 0 | 0 0 0 
 0 0 0 | 0 0 0 | 0 0 0 
 ```
+
+Our sudoku interface is contained within the `sudoku` directory. 
 
 ### create
 `create` randomly generates an unsolved puzzle with at least 40 missing numbers. To do so, it first creates an empty puzzle, then recursively fills all units in the puzzle, making sure the rules of sudoku are held. Then, it begins randomly removing numbers from the puzzle, until we are in the specified range for the given difficulty level (as described above), **and** there is our best approximation (\*) of one unique solution. Once it's done removing numbers, create prints the unfinished puzzle to standard output. 
@@ -105,7 +107,7 @@ void solve(char* file_name);
 bool solve_puzzle(puzzle_t* puzzle);
 ```
 
-Please run the following to execute `sudoku`:
+Please navigate to the `sudoku` directory and run the following to execute `sudoku`:
 `./sudoku create [difficultyLevel]` to create a 9x9 puzzle
 * where `difficultyLevel` is an optional parameter specifying the range of numbers to be shown, as described above
 * if no `difficultyLevel` is given, create defaults to `medium`, which shows 33-38 numbers
