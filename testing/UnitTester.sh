@@ -2,7 +2,8 @@
 
 #This is a shell script that will serve as a unit test for both create and solve
 
-echo "Testing Sudoku Create"
+echo "-------------- Beginning Testing------------------"
+echo "---------------Testing Sudoku Create--------------"
 echo "Generating 3 sudokus to the same file: create_test[1,2,3].txt"
 
 ../sudoku/sudoku create > create_test1.txt
@@ -33,19 +34,22 @@ else
     echo "Both puzzles are different"
 fi
 
-
+echo "---------------Testing Sudoku Solve--------------"
 echo "Testing Sudoku Solve with the created file if nothing went wrong check: create_test[1,2,3]_solution.out"
 ../sudoku/sudoku solve create_test1.txt >> create_test1_solution.out
 ../sudoku/sudoku solve create_test2.txt >> create_test2_solution.out
 ../sudoku/sudoku solve create_test3.txt >> create_test3_solution.out
 
+echo "---------------Error Checking--------------"
 echo "Now testing Sudoku Solver with edge cases"
 
-echo "Passing invalid Puzzle"
+echo "Passing invalid Puzzle (no solution)"
 ../sudoku/sudoku solve ../puzzlefiles/badpuzzle.txt
 
 echo "Passing invalid Puzzle Format"
 ../sudoku/sudoku solve ../puzzlefiles/invalid_format_puzzle.txt
+../sudoku/sudoku solve ../puzzlefiles/invalid2_format_puzzle.txt
+../sudoku/sudoku solve ../puzzlefiles/invalid3_format_puzzle.txt
 
 echo "Passing a sudoku with values outside of the bounds"
 ../sudoku/sudoku solve ../puzzlefiles/wrong_num.txt
