@@ -1,5 +1,6 @@
 # CS50 Sudoku Final Project
 ### Team KIDD -- Kelly Westkaemper, Irene Lam, David Kantor, David Perez Gonzalez
+### [Presentation Slides](https://docs.google.com/presentation/d/1343IQIaaz2zRQMnwuJ5UZo5MDIHimkjBaV7dq2zVZeU/edit?usp=sharing)
 
 ## Sudoku
 Our project supports two features: generating a new 9x9 puzzle, or solving a given 9x9 puzzle. For the latter, the program takes in a puzzle-formatted file and prints to stdout the solution, if any. It also allows you to specify difficulty level: easy, medium, or hard, where the number of shown boxes for each difficulty level are: 

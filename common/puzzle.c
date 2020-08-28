@@ -87,27 +87,6 @@ void puzzle_print(FILE *fp, puzzle_t *puzzle)
     }
 }
 
-/********clean_incomplete_puzzle*********/
-/* Given the row, column, and unit_num of the last instantiated unit,
- * free all the previous units and rows, and then free the puzzle itself
- * Used in puzzle_load when an invalid format is detected
- */
-void clean_incomplete_puzzle(puzzle_t *puzzle, int row, int col, int unit_num)
-{
-    for (int i = 0; i < row; i++) {			// clean up all prior rows
-	    for (int j = 0; j < MAX_COL; j++) {
-		    delete_unit(puzzle[i][j]); 
-	    }
-	    free(puzzle[i]);
-    }
-    for (int j = 0; j < col; j++) { 			// clean up current row
-	    delete_unit(puzzle[row][j]); 
-    }
-    free(puzzle[row]);
-    
-    free(puzzle); 					// free entire puzzle
-}
-
 /**********puzzle_load*************/
 /* Takes a pointer to a file that contains a properly formatted
 *  sudoku, then loads that sudoku into a new puzzle struct, 
@@ -116,7 +95,7 @@ void clean_incomplete_puzzle(puzzle_t *puzzle, int row, int col, int unit_num)
 puzzle_t *puzzle_load(FILE *fp)
 {
     // Initialize new puzzle 
-    puzzle_t *puzzle = assertp(malloc(MAX_COL*MAX_ROW*UNIT_SIZE), "puzzle load malloc failed"); 
+    puzzle_t *puzzle = assertp(puzzle_new(), "puzzle load malloc failed"); 
     int row = 0;
     int col = 0; 
     int unit_num = 1; 
@@ -128,31 +107,26 @@ puzzle_t *puzzle_load(FILE *fp)
     while ((line = freadlinep(fp)) != NULL) {
         count = 0;
         // Skip empty lines, or lines that start with "-"
-        if (strlen(line)==0 || line[0] == 45) {
+        if (strlen(line) == 0 || line[0] == 45) {
             free(line); 
             continue;
         }
-        // Otherwise, allocate memory for the row and process the line
-        puzzle[row] = malloc(MAX_COL*UNIT_SIZE);
-        if (puzzle[row] == NULL) {
-            fprintf(stderr, "Error loading file\n");
-            free(line);
-            return NULL;
-        }
+
+        // Otherwise, process the line
         for (int i = 0; i < strlen(line); i++) {
             // If character is a digit
             if (isdigit(line[i])) {
                 // If the next character is also a digit, then the format is invalid
                 if (i+1<strlen(line) && isdigit(line[i+1])) {
                     fprintf(stderr, "Invalid puzzle format\n"); 
-                    clean_incomplete_puzzle(puzzle, row, col, unit_num); 
+                    puzzle_delete(puzzle);
                     free(line);
 		            return NULL; 
                 }
                 // Subtract out 48 to get actual digit value
                 val = line[i] - 48;
                 // Insert into puzzle, and increment unit_num and column
-                puzzle[row][col] = unit_new(unit_num, val); 
+                puzzle[row][col] -> val = val;
                 unit_num++; 
                 col++; 
                 count++;
@@ -160,7 +134,8 @@ puzzle_t *puzzle_load(FILE *fp)
             // If character is not a space, or "|", then the format is invalid
             else if (line[i] != 32 && line[i] != 124) {
                 fprintf(stderr, "Invalid puzzle format\n"); 
-                clean_incomplete_puzzle(puzzle, row, col, unit_num); 
+                puzzle_delete(puzzle);
+                free(line);
 		        return NULL; 
             }
             else if (isspace(line[i])) {
@@ -182,9 +157,9 @@ puzzle_t *puzzle_load(FILE *fp)
         col = 0; 
     }
     // If we didn't receive enough units for the puzzle, then the format is invalid
-    if (unit_num-1 < MAX_ROW*MAX_COL) {
+    if (unit_num - 1 < MAX_ROW*MAX_COL) {
         fprintf(stderr, "Invalid puzzle format\n"); 
-	    clean_incomplete_puzzle(puzzle, row, col, unit_num);
+        puzzle_delete(puzzle);
         return NULL;
     }
     // Otherwise, puzzle has a valid format
