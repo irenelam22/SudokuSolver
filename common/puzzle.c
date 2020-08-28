@@ -105,23 +105,30 @@ puzzle_t *puzzle_load(FILE *fp)
     // Go through entire file, line by line 
     while ((line = freadlinep(fp)) != NULL) {
         // Skip empty lines, or lines that start with "-"
-        if (strlen(line) == 0 || line[0] == 45) {
+        if (strlen(line) == 0 || line[0] == 45) {               // 45 is the asci code for "-"
             free(line); 
             continue;
+        }
+         if ( strlen(line) > 22 ){                              // length of properly formatted line
+            fprintf(stderr, "Invalid puzzle format\n"); 
+            puzzle_delete(puzzle);
+            free(line);
+		    return NULL; 
         }
 
         // Otherwise, process the line
         for (int i = 0; i < strlen(line); i++) {
             // If character is a digit
+
             if (isdigit(line[i])) {
                 // If the next character is also a digit, then the format is invalid
-                if (i+1<strlen(line) && isdigit(line[i+1])) {
+                if (i + 1 < strlen(line) && isdigit(line[i + 1])) {
                     fprintf(stderr, "Invalid puzzle format\n"); 
                     puzzle_delete(puzzle);
                     free(line);
 		            return NULL; 
                 }
-                // Subtract out 48 to get actual digit value
+                // Subtract out 48 to get actual digit value (48 is the asci code for "0")
                 val = line[i] - 48;
                 // Insert into puzzle, and increment unit_num and column
                 puzzle[row][col] -> val = val;
@@ -129,7 +136,7 @@ puzzle_t *puzzle_load(FILE *fp)
                 col++; 
             }
             // If character is not a space, or "|", then the format is invalid
-            else if (line[i] != 32 && line[i] != 124) {
+            else if (line[i] != 32 && line[i] != 124) { // 32 and 124 are the asci codes for " " and "|" 
                 fprintf(stderr, "Invalid puzzle format\n"); 
                 puzzle_delete(puzzle);
                 free(line);

@@ -15,10 +15,13 @@ echo "Generating $1 tests "
 for (( i = 1; i <= $1; i++ )); 
 do 
     echo "Sudoku Solution Number $i : " >> fuzz.out
+    echo "Sudoku Number $i : " >> solve.out
     ../sudoku/sudoku create > testing.txt
     ../sudoku/sudoku solve testing.txt >> fuzz.out
+    cat testing.txt >> solve.out
 done
 
 rm -rf testing.txt
 
+echo "Fuzz Test Done: Please look at solve.out for sudoku generated"
 echo "Fuzz Test Done: Please look at fuzz.out for solutions"

@@ -5,15 +5,10 @@
 # one argument which will represent the number of time FuzzTest will generate
 # test cases. 
 
-
 if [ $# -ne 1 ]; then 
     echo "Error invalid number of arguments "
     exit 1
 fi 
-
-set -e
-make clean
-
 
 /bin/bash ./FuzzTest.sh $1
 
