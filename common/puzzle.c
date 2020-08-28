@@ -122,9 +122,11 @@ puzzle_t *puzzle_load(FILE *fp)
     int unit_num = 1; 
     int val; 
     char *line;
+    int count = 0;
 
     // Go through entire file, line by line 
     while ((line = freadlinep(fp)) != NULL) {
+        count = 0;
         // Skip empty lines, or lines that start with "-"
         if (strlen(line)==0 || line[0] == 45) {
             free(line); 
@@ -153,6 +155,7 @@ puzzle_t *puzzle_load(FILE *fp)
                 puzzle[row][col] = unit_new(unit_num, val); 
                 unit_num++; 
                 col++; 
+                count++;
             }
             // If character is not a space, or "|", then the format is invalid
             else if (line[i] != 32 && line[i] != 124) {
@@ -160,8 +163,20 @@ puzzle_t *puzzle_load(FILE *fp)
                 clean_incomplete_puzzle(puzzle, row, col, unit_num); 
 		        return NULL; 
             }
+            else if (isspace(line[i])) {
+                continue;
+            }
+            else {
+                count++;
+            }
         }
         // Free memory, and move to the next row
+        if (count != 11) {
+            fprintf(stderr, "Row %d of file invalid\n", row);
+            free(line);
+            clean_incomplete_puzzle(puzzle, row, col, unit_num);
+            return NULL;
+        }
         free(line);
         row++; 
         col = 0; 
