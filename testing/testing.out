@@ -1,0 +1,45 @@
+Generating 5 tests 
+Fuzz Test Done: Please look at solve.out for sudoku generated
+Fuzz Test Done: Please look at fuzz.out for solutions
+-------------- Beginning Testing------------------
+---------------Testing Sudoku Create--------------
+Generating 3 sudokus to the same file: create_test[1,2,3].txt
+Making sure each sudoku generated is diffrent
+Comparing 1 and 2
+Files create_test1.txt and create_test2.txt differ
+Both puzzles are different
+Comparing 2 and 3
+Files create_test2.txt and create_test3.txt differ
+Both puzzles are different
+Comparing 1 and 3
+Files create_test1.txt and create_test3.txt differ
+Both puzzles are different
+---------------Testing Sudoku Solve--------------
+Testing Sudoku Solve with the created file if nothing went wrong check: create_test[1,2,3]_solution.out
+---------------Error Checking--------------
+Now testing Sudoku Solver with edge cases
+Passing invalid Puzzle (no solution)
+Bad input
+1 1 1 | 1 1 1 | 1 1 1 
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+---------------------
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+---------------------
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+0 0 0 | 0 0 0 | 0 0 0 
+Passing invalid Puzzle Format
+Invalid puzzle format
+Please pass in a readable puzzle file for solve.
+Please pass in a readable puzzle file for solve.
+Passing a sudoku with values outside of the bounds
+Invalid puzzle format
+Passing 2 empty puzzles
+No Difference between two different runs of solve on the same empty puzzle
+Testing 2 valid puzzles
+Comparing solver solution to actual solution
+No differences between puzzle1 solver generated solution and solution 
+No differences between puzzle2 solver generated solution and solution 
