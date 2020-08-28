@@ -158,7 +158,8 @@ Other directories/files:
     * `Makefile` - compilation
 * `testing`
     * `FuzzTest.sh` - generates 'n' created puzzles
-    * `UnitTester.sh` - implements unit testing 
+    * `UnitTester.sh` - implements unit testing
+    * `testing.sh` - testing shell file that runs FuzzTest and UnitTester
 * `puzzlefiles`: contains a variety of hard-coded puzzles, for testing purposes
 * `ncurses` - extra credit interactive terminal functionality -- see README.md in ncurses directory for more information
     * `interface.h/interface.c` - header and driver file for terminal interaction
@@ -166,7 +167,7 @@ Other directories/files:
 
 ### Compilation
 
-To compile, simply `make`.
+To compile, simply type `make clean` then `make`.
 
 ### Testing
 
@@ -174,6 +175,10 @@ For our testing our stragedy was centered around trying run as many cases as we 
 1. FuzzTest.sh which is a shell script that intakes one input from the user which is the number of tests to generate. This script will call the create function save the output to a file that is then passed into the solve function which will solve it and then return the solved sudoku to a different file called fuzz.out
 2. Unit Testing- Our Unit Testing is all done in one shell script that calls the create function and checks to see if it is properly working and generating valid sudokus. We check this by passing the sudokus to the solver and seeing if any errors arise. We also test solver directly by passing it invlaid sudokus of various types from incorrect formatting to incorrect numbers and even blank sudokus. Then we pass valid sudokus and compare the results to the right answer to make sure it is correct.
 3. Testing.sh just runs make and make clean and then runs both of the tests previously mentioned. 
+
+More information on testing is contained in TESTING.md, in the `testing` directory. 
+
+To run testing, simply type `make test`. 
 
 ### Extra Credit
 
